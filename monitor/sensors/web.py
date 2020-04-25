@@ -24,7 +24,7 @@ class HTML(Sensor):
 			return data
 		data["content"] = req.text
 		data["elapsed"] = req.elapsed.total_seconds()
-		data["redirects"] = " ".join([h.url for h in req.history] + [req.url])
+		data["redirects"] = " ".join([h.url for h in req.history])
 		data["status_code"] = req.status_code
 		data["headers"] = json.dumps(dict(req.headers))
 

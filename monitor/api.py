@@ -26,6 +26,11 @@ class SensorDetailApi(Resource):
 		return data
 
 
+	def delete(self, sensor_id):
+		sensor_manager.delete(sensor_id)
+		return "delted {}".format(sensor_id)
+
+
 class SensorApi(Resource):
 	def get(self):
 		return [sensor.to_dict() for sensor in sensor_manager.sensors]
@@ -36,6 +41,10 @@ class SensorApi(Resource):
 		sensor = monitor.sensors.Uptime()
 		sensor_manager.add(sensor)
 		return sensor.to_dict()
+
+
+class DeleteSensorApi(Resource):
+	pass
 
 
 class DebugAddSensor(Resource):
