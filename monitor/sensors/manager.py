@@ -42,7 +42,9 @@ class SensorManager(object):
 
 
 	def last_reading(self, uid):
-		return self.db.fetch_all(self.db.sensor_prefix + uid)[-1]
+		readings = self.db.fetch_all(self.db.sensor_prefix + uid)
+		if len(readings) > 0:
+			return readings[-1]
 
 
 	def save(self):
