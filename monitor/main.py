@@ -1,14 +1,20 @@
 from flask import Flask, render_template, send_from_directory
 from flask_restful import Api
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 
 @app.route('/')
-def home():
-	return render_template("app.html")
+def index():
+	return react_app("index.html")
 
+
+@app.route('/<path:path>')
+def react_app(path):
+	return send_from_directory('build', path)
 
 from monitor.api import SensorDetailApi, SensorApi, DebugAddSensor
 
