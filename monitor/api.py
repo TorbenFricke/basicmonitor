@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import abort
+from flask import abort, request
 import monitor.sensors
 from monitor.sensors import sensors_available
 
@@ -31,20 +31,39 @@ class SensorDetailApi(Resource):
 		return "delted {}".format(sensor_id)
 
 
+from monitor import validators
+
+_validation_mask = {
+	"interval": validators.positive_float,
+	"name": None,
+	"enabled": validators.boolean,
+	"type": validators.whitelist(sensors_available),
+	"url": validators.url_safe,
+}
+
+
 class SensorApi(Resource):
 	def get(self):
 		return [sensor.to_dict() for sensor in sensor_manager.sensors]
 
 
 	def post(self):
-		# make a dummy sensor
-		sensor = monitor.sensors.Uptime()
+		data = request.get_json(force=True)
+
+		try:
+			clean = validators.apply_validation_mask(data, _validation_mask)
+
+			# make the sensor
+			cls = monitor.sensors.Sensor.subclasses_by_name()[clean.pop("type")]
+			sensor = cls(**clean)
+
+		except Exception as e:
+			return {"message": str(e)}
+
 		sensor_manager.add(sensor)
+		sensor.update()
 		return sensor.to_dict()
 
-
-class DeleteSensorApi(Resource):
-	pass
 
 
 class DebugAddSensor(Resource):
