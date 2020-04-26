@@ -21,7 +21,6 @@ class UpdateWorker(threading.Thread):
 			time_to_update = sensor.last_update + sensor.interval - now
 			# update sensor
 			if time_to_update <= 0:
-				print("updating {}".format(sensor.id))
 				sensor.update()
 			# remember lowest time remaining - this makes sure, we do not wait too long and pass an update
 			if time_to_update < next_timeout: next_timeout = time_to_update

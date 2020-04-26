@@ -48,7 +48,7 @@ class SensorUpdateApi(Resource):
 from monitor import validators
 
 _validation_mask = {
-	"interval": validators.positive_float,
+	"interval": validators.number_greater_than(29),
 	"name": None,
 	"enabled": validators.boolean,
 	"type": validators.whitelist(sensors_available),
