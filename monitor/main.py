@@ -16,13 +16,13 @@ def index():
 def react_app(path):
 	return send_from_directory('build', path)
 
-from monitor.api import SensorDetailApi, SensorApi, DebugAddSensor
+from monitor.api import SensorDetailApi, SensorApi, SensorUpdateApi
 
 # list sensors and add new ones
 api.add_resource(SensorApi, '/sensors', '/sensors/')
-api.add_resource(DebugAddSensor, '/debug')
 # show detail
 api.add_resource(SensorDetailApi, '/sensors/<string:sensor_id>')
+api.add_resource(SensorUpdateApi, '/sensors/<string:sensor_id>/update')
 
 
 

@@ -126,6 +126,14 @@ class Database(object):
 
 
 	@_dictify_select
+	def fetch_last_reading(self, table_name, column="time"):
+		table_name = _scrub_table_name(table_name)
+		return self.execute(
+			"SELECT * from {} ORDER BY {} DESC LIMIT 1;".format(table_name, column)
+		)
+
+
+	@_dictify_select
 	def fetch_id(self, table_name, uid):
 		table_name = _scrub_table_name(table_name)
 		return self.execute(

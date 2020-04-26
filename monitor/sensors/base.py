@@ -21,6 +21,9 @@ class Sensor(object):
 		self.interval = interval
 		self.enabled = kwargs.pop("enabled", True)
 
+		# keep track of the last update
+		self.last_update = -1
+
 		# update handler function
 		self.update_handler = dummy_update_handler
 
@@ -33,7 +36,7 @@ class Sensor(object):
 
 	def to_dict(self):
 		# Attributes of this opject, that will be serialized
-		whitelist = ["id", "name", "interval", "enabled", "kwargs"]
+		whitelist = ["id", "name", "interval", "enabled", "kwargs", "last_update"]
 		attributes = {key: self.__dict__[key] for key in whitelist if key in self.__dict__}
 		# also save the type
 		attributes["type"] = str(self.__class__.__name__)
@@ -67,6 +70,7 @@ class Sensor(object):
 
 	def update(self):
 		t = time.time()
+		self.last_update = t
 		fetched = self.fetch()
 
 		# convert to dict, if only one value is expected
@@ -87,7 +91,7 @@ class Sensor(object):
 		# save time just befor fetching
 		reading["time"] = t
 
-		# write to Database
+		# call the update handler - used to write to Database
 		self.update_handler(self.id, reading)
 
 		return reading

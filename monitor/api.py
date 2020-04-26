@@ -31,6 +31,20 @@ class SensorDetailApi(Resource):
 		return "delted {}".format(sensor_id)
 
 
+class SensorUpdateApi(Resource):
+	def get(self, sensor_id):
+		sensor = sensor_manager[sensor_id]
+		if sensor is None:
+			abort(404)
+
+		return sensor.update()
+
+
+	def delete(self, sensor_id):
+		sensor_manager.delete(sensor_id)
+		return "delted {}".format(sensor_id)
+
+
 from monitor import validators
 
 _validation_mask = {
@@ -61,7 +75,8 @@ class SensorApi(Resource):
 			return {"message": str(e)}
 
 		sensor_manager.add(sensor)
-		sensor.update()
+		# update sensor asynchronously
+		sensor_manager.updater.cmd(sensor.update)
 		return sensor.to_dict()
 
 

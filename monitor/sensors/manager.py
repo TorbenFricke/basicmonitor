@@ -1,5 +1,54 @@
-import json
+import collections, threading, queue, time
 from monitor.sensors import sensors_available, Sensor
+
+
+
+class UpdateWorker(threading.Thread):
+	def __init__(self, parent):
+		threading.Thread.__init__(self)
+		self.daemon = True
+		self.command_queue = queue.Queue()
+		self.parent = parent
+
+
+	def check_sensors(self):
+		now = time.time()
+		next_timeout = 5
+		for sensor in self.parent.sensors:
+			# ignore all disabled sensors
+			if not sensor.enabled:
+				continue
+			time_to_update = sensor.last_update + sensor.interval - now
+			# update sensor
+			if time_to_update <= 0:
+				print("updating {}".format(sensor.id))
+				sensor.update()
+			# remember lowest time remaining - this makes sure, we do not wait too long and pass an update
+			if time_to_update < next_timeout: next_timeout = time_to_update
+			# also make sure we do not waitlonger, than the smallest interval
+			if sensor.interval < next_timeout: next_timeout = sensor.interval
+
+		return next_timeout
+
+
+	def run(self):
+		next_timeout = 5
+		while True:
+			# execute commands commands
+			try:
+				cmd, args, kwargs = self.command_queue.get(timeout=next_timeout)
+				cmd(*args, **kwargs)
+			except:
+				pass
+			# update all the sensors
+			try:
+				next_timeout = self.check_sensors()
+			except Exception as e:
+				next_timeout = 5
+
+
+	def cmd(self, f, *args, **kwargs):
+		self.command_queue.put((f, args, kwargs))
 
 
 class SensorManager(object):
@@ -7,6 +56,8 @@ class SensorManager(object):
 		self.sensors = []
 		self.db = db
 		self.sensors_table = db.object_table("sensors")
+		self.updater = UpdateWorker(self)
+		self.updater.start()
 
 
 	def add(self, sensor):
@@ -42,7 +93,7 @@ class SensorManager(object):
 
 
 	def last_reading(self, uid):
-		readings = self.db.fetch_all(self.db.sensor_prefix + uid)
+		readings = self.db.fetch_last_reading(self.db.sensor_prefix + uid)
 		if len(readings) > 0:
 			return readings[-1]
 
