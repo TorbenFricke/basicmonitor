@@ -81,15 +81,14 @@ class Sensor(object):
 			raise TypeError(
 				"A sensor returned an unknown type in its fetch() call. fetch() sould return a str, float or dict")
 
-		reading = {}
+		reading = {
+			"time": t
+		}
 		for key in self.channels:
 			if not key in fetched:
 				reading[key] = None
 			else:
 				reading[key] = fetched[key]
-
-		# save time just befor fetching
-		reading["time"] = t
 
 		# call the update handler - used to write to Database
 		self.update_handler(self.id, reading)
