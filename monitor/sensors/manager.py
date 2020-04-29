@@ -1,8 +1,7 @@
 import collections, threading, queue, time
 from monitor.sensors import sensors_available, Sensor
 
-def do_nothing(*args):
-	pass
+def do_nothing(*args): pass
 
 
 class UpdateWorker(threading.Thread):
@@ -96,6 +95,7 @@ class SensorManager(object):
 				"reading": reading
 			})
 
+		# handle updates
 		sensor.update_handler = update_handler
 
 
