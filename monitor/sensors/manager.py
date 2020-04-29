@@ -1,6 +1,8 @@
 import collections, threading, queue, time
 from monitor.sensors import sensors_available, Sensor
 
+def do_nothing(*args):
+	pass
 
 
 class UpdateWorker(threading.Thread):
@@ -8,7 +10,11 @@ class UpdateWorker(threading.Thread):
 		threading.Thread.__init__(self)
 		self.daemon = True
 		self.command_queue = queue.Queue()
+		self.updated_queue = queue.Queue()
 		self.parent = parent
+
+		# events
+		self.on_update = do_nothing
 
 
 	def check_sensors(self):
@@ -21,7 +27,11 @@ class UpdateWorker(threading.Thread):
 			time_to_update = sensor.last_update + sensor.interval - now
 			# update sensor
 			if time_to_update <= 0:
-				sensor.update()
+				update_info = {
+					"id": sensor.id,
+					"reading": sensor.update(),
+				}
+				self.on_update(update_info)
 			# remember lowest time remaining - this makes sure, we do not wait too long and pass an update
 			if time_to_update < next_timeout: next_timeout = time_to_update
 			# also make sure we do not waitlonger, than the smallest interval
@@ -58,6 +68,10 @@ class SensorManager(object):
 		self.updater = UpdateWorker(self)
 		self.updater.start()
 
+		# events
+		self.on_add_sensor = do_nothing
+		self.on_delete_sensor = do_nothing
+
 
 	def add(self, sensor):
 		# overwrite old sensor with same UID
@@ -69,6 +83,9 @@ class SensorManager(object):
 		self.link_sensor(sensor)
 
 		self.save()
+
+		# trigger event
+		self.on_add_sensor(sensor.to_dict())
 
 
 	def link_sensor(self, sensor):
@@ -86,6 +103,9 @@ class SensorManager(object):
 			# remove corresponding DB table
 			self.db.delete_id(self.sensors_table, uid)
 			self.db.drop(self.db.sensor_prefix + uid)
+
+			# trigger event
+			self.on_delete_sensor(uid)
 
 			return True
 		return False

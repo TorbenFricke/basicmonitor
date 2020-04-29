@@ -1,5 +1,5 @@
 from unittest import TestCase
-import random, threading, queue, time
+import random, threading, queue, time, json
 from uuid import uuid4
 from monitor.db import Database
 from monitor.sensors import HTML, CPUPercentage, Sensor
@@ -11,6 +11,22 @@ db = Database(":memory:", echo=False)
 def make_sensors():
 	"""makes two dummy sensors"""
 	return [HTML(url="http://google.com"), CPUPercentage()]
+
+
+def assert_equal_jsons(json1, json2):
+	def assert_equal_objects(o1, o2):
+		assert set(o1.keys()) == set(o2.keys())
+
+		for key, value in o1.items():
+			if type(value) == dict:
+				assert_equal_objects(value, o2[key])
+			else:
+				assert o2[key] == value
+
+	assert_equal_objects(
+		json.loads(json1),
+		json.loads(json2)
+	)
 
 
 class DBTest(TestCase):

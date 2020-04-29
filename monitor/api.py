@@ -1,8 +1,9 @@
 from flask_restful import Resource
-from flask import abort, request
+from flask import abort, request, Response
+import json
 import monitor.sensors
 from monitor.sensors import sensors_available
-
+from monitor.event import EventManager
 
 # create Database instance
 from monitor.db import Database
@@ -13,6 +14,10 @@ db = Database('{}/everything.db'.format(os.path.dirname(__file__)))
 from monitor.sensors import SensorManager
 sensor_manager = SensorManager(db)
 sensor_manager.load()
+
+
+# create event manager
+event_manager = EventManager(sensor_manager)
 
 
 class SensorDetailApi(Resource):
@@ -80,10 +85,13 @@ class SensorApi(Resource):
 		return sensor.to_dict()
 
 
-
-class DebugAddSensor(Resource):
+class EventsApi(Resource):
 	def get(self):
-		s = monitor.sensors.HTML("facebook", url="http://facebook.com")
-		sensor_manager.add(s)
-		s.update()
-		return s.to_dict()
+		def events():
+			for event in event_manager.subscribe():
+				yield json.dumps(event, indent=2) + "\n"
+
+		return Response(
+			events(),
+			mimetype='application/json'
+		)

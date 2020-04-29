@@ -22,7 +22,7 @@ class Sensor(object):
 		self.enabled = kwargs.pop("enabled", True)
 
 		# keep track of the last update
-		self.last_update = -1
+		self.last_update = kwargs.pop("last_update", -1)
 
 		# update handler function
 		self.update_handler = dummy_update_handler
@@ -44,7 +44,7 @@ class Sensor(object):
 
 
 	def to_json(self):
-		return json.dumps(self.to_dict())
+		return json.dumps(self.to_dict(), sort_keys=True)
 
 
 	@classmethod
