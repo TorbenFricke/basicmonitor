@@ -2,7 +2,7 @@ from monitor.helpers import uid
 import json, time
 
 
-def dummy_update_handler(sender, data): pass
+def do_nothing(*args): pass
 
 
 class Sensor(object):
@@ -25,12 +25,13 @@ class Sensor(object):
 		self.last_update = kwargs.pop("last_update", -1)
 
 		# update handler function
-		self.update_handler = dummy_update_handler
+		self.update_handler = do_nothing
 
 		# remember keyword arguments to be accessible by subclasses later. Compared to hard coding new attributes, this
 		# has the advantage that the serialization stays the same.
 		self.kwargs = kwargs
 
+		# run validation handled by subclass
 		self.validate()
 
 

@@ -7,7 +7,7 @@ class EventManager(object):
 		self.sensor_manager = sensor_manager
 		self.sensor_manager.on_add_sensor = self._basic_on_event_handler("sensor added")
 		self.sensor_manager.on_delete_sensor = self._basic_on_event_handler("sensor deleted")
-		self.sensor_manager.updater.on_update = self._basic_on_event_handler("sensor updated")
+		self.sensor_manager.on_update = self._basic_on_event_handler("sensor updated")
 
 		self.subscriptions = collections.defaultdict(Queue)
 

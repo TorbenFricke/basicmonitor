@@ -27,14 +27,10 @@ class UpdateWorker(threading.Thread):
 			time_to_update = sensor.last_update + sensor.interval - now
 			# update sensor
 			if time_to_update <= 0:
-				update_info = {
-					"id": sensor.id,
-					"reading": sensor.update(),
-				}
-				self.on_update(update_info)
+				sensor.update()
 			# remember lowest time remaining - this makes sure, we do not wait too long and pass an update
 			if time_to_update < next_timeout: next_timeout = time_to_update
-			# also make sure we do not waitlonger, than the smallest interval
+			# also make sure we do not wait longer, than the smallest interval
 			if sensor.interval < next_timeout: next_timeout = sensor.interval
 
 		return next_timeout
@@ -71,6 +67,7 @@ class SensorManager(object):
 		# events
 		self.on_add_sensor = do_nothing
 		self.on_delete_sensor = do_nothing
+		self.on_update = do_nothing
 
 
 	def add(self, sensor):
@@ -91,7 +88,15 @@ class SensorManager(object):
 	def link_sensor(self, sensor):
 		# make and link corresponding DB table
 		self.db.channel_table(sensor)
-		sensor.update_handler = self.db.insert_reading
+
+		def update_handler(id, reading):
+			self.db.insert_reading(id, reading)
+			self.on_update({
+				"id": id,
+				"reading": reading
+			})
+
+		sensor.update_handler = update_handler
 
 
 	def delete(self, uid):
