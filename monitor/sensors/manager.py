@@ -10,9 +10,12 @@ class RemoveOldReadingsWorker(threading.Thread):
 		self.parent = parent
 
 	def remove_old_values(self):
+		db = self.parent.db
+		now = time.time()
 		for sensor in self.parent.sensors:
-			prefix = self.parent.db.sensor_prefix
-			self.parent.db.remove_old_readings(prefix + sensor.id)
+			prefix = db.sensor_prefix
+			older_than = now - sensor.retain_for
+			db.remove_old_readings(prefix + sensor.id, older_than)
 
 	def run(self):
 		while True:
