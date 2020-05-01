@@ -92,7 +92,7 @@ class SensorManager(object):
 			self.db.insert_reading(id, reading)
 			self.on_update({
 				"id": id,
-				"reading": reading
+				#"reading": reading # including the reading may cause the json parser to fail for large readings....
 			})
 
 		# handle updates

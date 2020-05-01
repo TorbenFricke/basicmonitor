@@ -27,7 +27,7 @@ _validation_mask = {
 	"name": None,
 	"enabled": validators.boolean,
 	"type": validators.whitelist(sensors_available),
-	"url": validators.url_safe,
+	"url": None,
 }
 
 

@@ -20,11 +20,16 @@ class HTML(Sensor):
 		data = {}
 		try:
 			req = requests.get(self.kwargs.get("url"))
-		except:
+		except Exception as e:
 			return data
 		data["content"] = req.text
 		data["elapsed"] = req.elapsed.total_seconds()
-		data["redirects"] = " ".join([h.url for h in req.history])
+		redirects = [h.url for h in req.history] + [req.url]
+		try:
+			redirects = redirects[1:]
+		except:
+			pass
+		data["redirects"] = " ".join(redirects)
 		data["status_code"] = req.status_code
 		data["headers"] = json.dumps(dict(req.headers))
 
