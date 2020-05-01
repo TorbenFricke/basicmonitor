@@ -19,6 +19,7 @@ class Sensor(object):
 		self.id = kwargs.pop("id", uid())
 		assert type(self.id) is str
 		self.interval = interval
+		self.retain_for = kwargs.pop("retain_for", 90*24*60*60)
 		self.enabled = kwargs.pop("enabled", True)
 
 		# keep track of the last update
@@ -37,7 +38,7 @@ class Sensor(object):
 
 	def to_dict(self):
 		# Attributes of this opject, that will be serialized
-		whitelist = ["id", "name", "interval", "enabled", "kwargs", "last_update"]
+		whitelist = ["id", "name", "interval", "enabled", "kwargs", "last_update", "retain_for"]
 		attributes = {key: self.__dict__[key] for key in whitelist if key in self.__dict__}
 		# also save the type
 		attributes["type"] = str(self.__class__.__name__)

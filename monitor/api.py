@@ -24,6 +24,7 @@ from monitor import validators
 
 _validation_mask = {
 	"interval": validators.number_greater_than(29),
+	"retain_for": validators.number_greater_than(60*60), # at lesat one hour
 	"name": None,
 	"enabled": validators.boolean,
 	"type": validators.whitelist(sensors_available),
@@ -61,6 +62,9 @@ class SensorDetailApi(Resource):
 					setattr(sensor, key, value)
 				if key in kwargs:
 					kwargs[key] = value
+
+			# trigger event
+			event_manager.on_sensor_edit(sensor.id)
 
 		except Exception as e:
 			return {"message": str(e)}
