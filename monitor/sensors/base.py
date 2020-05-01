@@ -44,6 +44,13 @@ class Sensor(object):
 		return attributes
 
 
+	def to_flat_dict(self):
+		d = self.to_dict()
+		kwargs = d.pop("kwargs")
+		d.update(kwargs)
+		return d
+
+
 	def to_json(self):
 		return json.dumps(self.to_dict(), sort_keys=True)
 

@@ -81,7 +81,7 @@ class SensorManager(object):
 		self.save()
 
 		# trigger event
-		self.on_add_sensor(sensor.to_dict())
+		self.on_add_sensor(sensor.to_flat_dict())
 
 
 	def link_sensor(self, sensor):

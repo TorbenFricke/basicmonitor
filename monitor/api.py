@@ -37,7 +37,7 @@ class SensorDetailApi(Resource):
 		if sensor is None:
 			abort(404)
 
-		data = sensor.to_dict()
+		data = sensor.to_flat_dict()
 		data["last_reading"] = sensor_manager.last_reading(sensor_id)
 		return data
 
@@ -55,21 +55,22 @@ class SensorDetailApi(Resource):
 		data = request.get_json(force=True)
 		try:
 			clean = validators.apply_validation_mask(data, _validation_mask)
+			kwargs = sensor.kwargs
 			for key, value in clean.items():
 				if key in sensor.__dict__:
 					setattr(sensor, key, value)
-				if key in sensor.kwargs:
-					setattr(sensor.kwargs, key, value)
+				if key in kwargs:
+					kwargs[key] = value
 
 		except Exception as e:
 			return {"message": str(e)}
 
-		return sensor.to_dict()
+		return sensor.to_flat_dict()
 
 
 class SensorApi(Resource):
 	def get(self):
-		return [sensor.to_dict() for sensor in sensor_manager.sensors]
+		return [sensor.to_flat_dict() for sensor in sensor_manager.sensors]
 
 
 	def post(self):
@@ -88,7 +89,7 @@ class SensorApi(Resource):
 		sensor_manager.add(sensor)
 		# update sensor asynchronously
 		sensor_manager.updater.cmd(sensor.update)
-		return sensor.to_dict()
+		return sensor.to_flat_dict()
 
 
 
