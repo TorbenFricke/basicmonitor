@@ -260,6 +260,14 @@ class Database(object):
 		)
 
 
+	def remove_old_readings(self, table_name, older_than):
+		table_name = _scrub_table_name(table_name)
+		self.execute(
+			"DELETE from {} where time < ?".format(table_name),
+			(older_than, )
+		)
+
+
 if __name__ == "__main__":
 	db = Database(":memory:", echo=True)
 	db.object_table("sensors")

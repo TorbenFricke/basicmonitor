@@ -3,6 +3,22 @@ from monitor.sensors import sensors_available, Sensor
 
 def do_nothing(*args): pass
 
+class RemoveOldReadingsWorker(threading.Thread):
+	def __init__(self, parent):
+		threading.Thread.__init__(self)
+		self.daemon = True
+		self.parent = parent
+
+	def remove_old_values(self):
+		for sensor in self.parent.sensors:
+			prefix = self.parent.db.sensor_prefix
+			self.parent.db.remove_old_readings(prefix + sensor.id)
+
+	def run(self):
+		while True:
+			time.sleep(5*60)
+			self.remove_old_values()
+
 
 class UpdateWorker(threading.Thread):
 	def __init__(self, parent):
@@ -62,6 +78,8 @@ class SensorManager(object):
 		self.sensors_table = db.object_table("sensors")
 		self.updater = UpdateWorker(self)
 		self.updater.start()
+		self.remove_old_worker = RemoveOldReadingsWorker(self)
+		self.remove_old_worker.start()
 
 		# events
 		self.on_add_sensor = do_nothing

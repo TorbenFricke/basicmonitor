@@ -147,3 +147,29 @@ class DBTest(TestCase):
 			raise error_queue.get_nowait()
 		except queue.Empty:
 			pass
+
+
+	def test_remove_old_readings(self):
+		sensor = CPUPercentage()
+		table_name = db.sensor_prefix + sensor.id
+		db.channel_table(sensor)
+
+		i = 0
+		def dummy_data():
+			nonlocal i
+			i += 1
+			return {
+				"time": i,
+				"percentage": 0.1337
+			}
+
+		for _ in range(20):
+			db.insert_reading(sensor.id, dummy_data())
+
+		older_than = 5
+
+		db.remove_old_readings(table_name, older_than)
+		rows = db.fetch_all(table_name)
+
+		for row in rows:
+			assert not row["time"] < older_than
