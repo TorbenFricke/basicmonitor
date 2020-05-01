@@ -64,7 +64,6 @@ class SensorDetailApi(Resource):
 		except Exception as e:
 			return {"message": str(e)}
 
-
 		return sensor.to_dict()
 
 
