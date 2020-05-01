@@ -20,6 +20,17 @@ sensor_manager.load()
 event_manager = EventManager(sensor_manager)
 
 
+from monitor import validators
+
+_validation_mask = {
+	"interval": validators.number_greater_than(29),
+	"name": None,
+	"enabled": validators.boolean,
+	"type": validators.whitelist(sensors_available),
+	"url": validators.url_safe,
+}
+
+
 class SensorDetailApi(Resource):
 	def get(self, sensor_id):
 		sensor = sensor_manager[sensor_id]
@@ -33,32 +44,28 @@ class SensorDetailApi(Resource):
 
 	def delete(self, sensor_id):
 		sensor_manager.delete(sensor_id)
-		return "delted {}".format(sensor_id)
+		return "deleted {}".format(sensor_id)
 
 
-class SensorUpdateApi(Resource):
-	def get(self, sensor_id):
+	def put(self, sensor_id):
 		sensor = sensor_manager[sensor_id]
 		if sensor is None:
 			abort(404)
 
-		return sensor.update()
+		data = request.get_json(force=True)
+		try:
+			clean = validators.apply_validation_mask(data, _validation_mask)
+			for key, value in clean.items():
+				if key in sensor.__dict__:
+					setattr(sensor, key, value)
+				if key in sensor.kwargs:
+					setattr(sensor.kwargs, key, value)
+
+		except Exception as e:
+			return {"message": str(e)}
 
 
-	def delete(self, sensor_id):
-		sensor_manager.delete(sensor_id)
-		return "delted {}".format(sensor_id)
-
-
-from monitor import validators
-
-_validation_mask = {
-	"interval": validators.number_greater_than(29),
-	"name": None,
-	"enabled": validators.boolean,
-	"type": validators.whitelist(sensors_available),
-	"url": validators.url_safe,
-}
+		return sensor.to_dict()
 
 
 class SensorApi(Resource):
@@ -83,6 +90,22 @@ class SensorApi(Resource):
 		# update sensor asynchronously
 		sensor_manager.updater.cmd(sensor.update)
 		return sensor.to_dict()
+
+
+
+class SensorListApi(Resource):
+	def get(self, sensor_id):
+		sensor = sensor_manager[sensor_id]
+		if sensor is None:
+			abort(404)
+
+		return sensor.update()
+
+
+	def delete(self, sensor_id):
+		sensor_manager.delete(sensor_id)
+		return "delted {}".format(sensor_id)
+
 
 
 class EventsApi(Resource):
