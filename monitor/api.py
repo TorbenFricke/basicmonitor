@@ -3,21 +3,7 @@ from flask import abort, request, Response
 import json
 import monitor.sensors
 from monitor.sensors import sensors_available
-from monitor.event import EventManager
-
-# create Database instance
-from monitor.db import Database
-import os
-db = Database('{}/everything.db'.format(os.path.dirname(__file__)))
-
-# create sensor manager
-from monitor.sensors import SensorManager
-sensor_manager = SensorManager(db)
-sensor_manager.load()
-
-
-# create event manager
-event_manager = EventManager(sensor_manager)
+from monitor import state
 
 
 from monitor import validators
@@ -34,6 +20,7 @@ _validation_mask = {
 
 class SensorDetailApi(Resource):
 	def get(self, sensor_id):
+		sensor_manager = state.get_sensor_manager()
 		sensor = sensor_manager[sensor_id]
 		if sensor is None:
 			abort(404)
@@ -44,12 +31,12 @@ class SensorDetailApi(Resource):
 
 
 	def delete(self, sensor_id):
-		sensor_manager.delete(sensor_id)
+		state.get_sensor_manager().delete(sensor_id)
 		return "deleted {}".format(sensor_id)
 
 
 	def put(self, sensor_id):
-		sensor = sensor_manager[sensor_id]
+		sensor = state.get_sensor_manager()[sensor_id]
 		if sensor is None:
 			abort(404)
 
@@ -64,7 +51,7 @@ class SensorDetailApi(Resource):
 					kwargs[key] = value
 
 			# trigger event
-			event_manager.on_sensor_edit(sensor.id)
+			state.get_event_manager().on_sensor_edit(sensor.id)
 
 		except Exception as e:
 			return {"message": str(e)}
@@ -74,7 +61,7 @@ class SensorDetailApi(Resource):
 
 class SensorApi(Resource):
 	def get(self):
-		return [sensor.to_flat_dict() for sensor in sensor_manager.sensors]
+		return [sensor.to_flat_dict() for sensor in state.get_sensor_manager().sensors]
 
 
 	def post(self):
@@ -90,6 +77,7 @@ class SensorApi(Resource):
 		except Exception as e:
 			return {"message": str(e)}
 
+		sensor_manager = state.get_sensor_manager()
 		sensor_manager.add(sensor)
 		# update sensor asynchronously
 		sensor_manager.updater.cmd(sensor.update)
@@ -99,7 +87,7 @@ class SensorApi(Resource):
 
 class SensorListApi(Resource):
 	def get(self, sensor_id):
-		sensor = sensor_manager[sensor_id]
+		sensor = state.get_sensor_manager()[sensor_id]
 		if sensor is None:
 			abort(404)
 
@@ -107,7 +95,7 @@ class SensorListApi(Resource):
 
 
 	def delete(self, sensor_id):
-		sensor_manager.delete(sensor_id)
+		state.get_sensor_manager().delete(sensor_id)
 		return "delted {}".format(sensor_id)
 
 
@@ -115,7 +103,7 @@ class SensorListApi(Resource):
 class EventsApi(Resource):
 	def get(self):
 		def events():
-			for event in event_manager.subscribe():
+			for event in state.get_event_manager().subscribe():
 				yield json.dumps(event, indent=2) + "\n"
 
 		return Response(

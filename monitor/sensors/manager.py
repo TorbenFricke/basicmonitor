@@ -20,7 +20,10 @@ class RemoveOldReadingsWorker(threading.Thread):
 	def run(self):
 		while True:
 			time.sleep(5*60)
-			self.remove_old_values()
+			try:
+				self.remove_old_values()
+			except:
+				pass
 
 
 class UpdateWorker(threading.Thread):
@@ -76,6 +79,7 @@ class UpdateWorker(threading.Thread):
 
 class SensorManager(object):
 	def __init__(self, db):
+		print("poooof")
 		self.sensors = []
 		self.db = db
 		self.sensors_table = db.object_table("sensors")
