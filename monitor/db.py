@@ -35,29 +35,6 @@ def _scrub_table_name(identifier, replace_invalid_with=""):
 	return '"' + sanitized.replace('"', "") + '"'
 
 
-class DatabaseWorker(threading.Thread):
-	def __init__(self, db):
-		self.db = db
-		threading.Thread.__init__(self)
-		self.daemon = True
-
-
-	def run(self):
-		# establish connection now. This ensures the connection is only accessed by this thread, despite setting the
-		# check_same_thread=False flag.
-		connection = sql.connect(self.db.path, check_same_thread=False)
-		while True:
-			return_queue, args, kwargs = self.db.queue.get()
-			try:
-				return_queue.put(
-					self.db.execute_with_connection(connection, *args, **kwargs)
-				)
-			except Exception as e:
-				return_queue.put(e)
-			finally:
-				self.db.queue.task_done()
-
-
 class Database(object):
 
 	def __init__(self, path, **kwargs):
@@ -67,11 +44,9 @@ class Database(object):
 		# general
 		self.sensor_prefix = "sensor-"
 
-		# make a single thread that interfaces with the database
-		self.queue = queue.Queue()
-		self.return_queues = defaultdict(queue.Queue)
-		self.worker = DatabaseWorker(self)
-		self.worker.start()
+		# make a db connection and corresponding lock
+		self.connection = sql.connect(self.path, check_same_thread=False)
+		self.lock = threading.Lock()
 
 
 	def _log(self, msg):
@@ -79,28 +54,20 @@ class Database(object):
 			print('\033[94m' + msg + '\033[0m')
 
 
-	def execute_with_connection(self, connection, sql, parameters=(), commit=False):
+	def execute(self, sql, parameters=(), commit=False):
 		self._log(sql)
 
-		cursor = connection.cursor()
-		if type(parameters) is list:
-			ret = cursor.executemany(sql, parameters)
-		else:
-			ret = cursor.execute(sql, parameters)
+		with self.lock:
+			cursor = self.connection.cursor()
+			if type(parameters) is list:
+				ret = cursor.executemany(sql, parameters)
+			else:
+				ret = cursor.execute(sql, parameters)
 
-		if commit:
-			connection.commit()
-			self._log("COMMIT")
-		return ret
+			if commit:
+				self.connection.commit()
+				self._log("COMMIT")
 
-
-	def execute(self, *args, **kwargs):
-		# unfortunately, we need have one return queue for every Thread.
-		return_queue = self.return_queues[threading.get_ident()]
-		self.queue.put((return_queue, args, kwargs))
-		ret = return_queue.get()
-		if isinstance(ret, Exception):
-			raise ret
 		return ret
 
 
