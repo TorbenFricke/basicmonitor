@@ -51,7 +51,7 @@ class TriggerManager(object):
 		sensor_id = event.id
 		for trigger in self.triggers:
 			if sensor_id in trigger.linked_sensors:
-				trigger.check()
+				trigger.check(self.sensor_manager)
 
 
 	def save(self):
