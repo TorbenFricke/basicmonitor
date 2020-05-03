@@ -51,3 +51,7 @@ def number_greater_than(threshold):
 		assert number > threshold, "Value below threshold of {}".format(threshold)
 		return number
 	return wrapped
+
+
+def integer(number):
+	return int(number)

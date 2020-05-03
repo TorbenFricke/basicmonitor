@@ -1,12 +1,10 @@
+from flask import request
 from flask_restful import Resource
-from flask import abort, request, Response
-import json
+from werkzeug.exceptions import abort
+
 import monitor.sensors
+from monitor import validators, state
 from monitor.sensors import sensors_available
-from monitor import state
-
-
-from monitor import validators
 
 _validation_mask = {
 	"interval": validators.number_greater_than(29),
@@ -84,7 +82,6 @@ class SensorApi(Resource):
 		return sensor.to_flat_dict()
 
 
-
 class SensorListApi(Resource):
 	def get(self, sensor_id):
 		sensor = state.get_sensor_manager()[sensor_id]
@@ -99,14 +96,3 @@ class SensorListApi(Resource):
 		return "delted {}".format(sensor_id)
 
 
-
-class EventsApi(Resource):
-	def get(self):
-		def events():
-			for event in state.get_event_manager().subscribe():
-				yield json.dumps(event, indent=2) + "\n"
-
-		return Response(
-			events(),
-			mimetype='application/json'
-		)

@@ -16,7 +16,10 @@ def index():
 def react_app(path):
 	return send_from_directory('build', path)
 
-from monitor.api import SensorDetailApi, SensorApi, SensorListApi, EventsApi
+
+from monitor.api.sensor import SensorDetailApi, SensorApi, SensorListApi
+from monitor.api.trigger import TriggerApi
+from monitor.api.event import EventsApi
 
 # list sensors and add new ones
 api.add_resource(SensorApi, '/sensors', '/sensors/')
@@ -25,6 +28,8 @@ api.add_resource(SensorDetailApi, '/sensors/<string:sensor_id>')
 api.add_resource(SensorListApi, '/sensors/<string:sensor_id>/update')
 # events
 api.add_resource(EventsApi, '/events')
+# triggers
+api.add_resource(TriggerApi, '/triggers')
 
 
 

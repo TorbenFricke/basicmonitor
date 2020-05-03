@@ -1,5 +1,6 @@
 from monitor.event import EventManager
 from monitor.sensors import SensorManager
+from monitor.triggers import TriggerManager
 from monitor.db import Database
 import os, threading, collections
 
@@ -18,9 +19,14 @@ def get_state():
 
 			# create event manager
 			event_manager = EventManager(sensor_manager)
+
+			# create trigger manager
+			trigger_manager = TriggerManager(db=db, sensor_manager=sensor_manager, event_manager=event_manager)
+
 			_state["db"] = db
 			_state["sensor_manager"] = sensor_manager
 			_state["event_manager"] = event_manager
+			_state["trigger_manager"] = trigger_manager
 
 	return _state
 
@@ -35,3 +41,7 @@ def get_sensor_manager():
 
 def get_event_manager():
 	return get_state()["event_manager"]
+
+
+def get_trigger_manager():
+	return get_state()["trigger_manager"]
