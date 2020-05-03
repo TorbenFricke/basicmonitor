@@ -13,14 +13,14 @@ class Trigger(object):
 		self.retain_for = kwargs.pop("retain_for", 90 * 24 * 60 * 60)
 		self.enabled = kwargs.pop("enabled", True)
 
-		# guts
-		self.expression = expression
-		self._variables = []
-		self.variables = variables
-		self.broken = False
-
 		# remember linked sensors
 		self.linked_sensors = set()
+
+		# guts
+		self.expression = expression
+		self._variables = None
+		self.variables = variables
+		self.broken = False
 
 		# keep track of the last update
 		self.last_update = kwargs.pop("last_update", -1)
@@ -63,7 +63,8 @@ class Trigger(object):
 	@variables.setter
 	def variables(self, value):
 		self._variables = value
-		for variable in value:
+		self.linked_sensors = set()
+		for variable in value.values():
 			self.linked_sensors.add(variable["id"])
 
 

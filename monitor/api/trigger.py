@@ -13,9 +13,9 @@ def make_variables_validator():
 		"channel": validators.whitelist(all_channels),
 	}
 
-	def wrapped(var_list):
+	def wrapped(variables):
 		out = []
-		for var in var_list:
+		for var in variables.values():
 			clean = validators.apply_validation_mask(var, variables_mask)
 			for key in variables_mask.keys():
 				assert key in clean
