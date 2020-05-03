@@ -79,7 +79,6 @@ class UpdateWorker(threading.Thread):
 
 class SensorManager(object):
 	def __init__(self, db):
-		print("poooof")
 		self.sensors = []
 		self.db = db
 		self.sensors_table = db.object_table("sensors")

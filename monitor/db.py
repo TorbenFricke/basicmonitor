@@ -93,11 +93,22 @@ class Database(object):
 
 
 	@_dictify_select
-	def fetch_last_reading(self, table_name, column="time"):
+	def fetch_nth_reading(self, table_name, idx):
 		table_name = _scrub_table_name(table_name)
-		return self.execute(
-			"SELECT * from {} ORDER BY {} DESC LIMIT 1;".format(table_name, column)
-		)
+		idx = int(idx)
+		if idx > 0:
+			return self.execute(
+				"SELECT * from {} LIMIT 1 OFFSET {};".format(table_name, "time", idx)
+			)
+		else:
+			idx = abs(idx) + 1
+			return self.execute(
+				"SELECT * from {} ORDER BY {} DESC LIMIT 1 OFFSET {};".format(table_name, "time", idx)
+			)
+
+
+	def fetch_last_reading(self, table_name):
+		return self.fetch_nth_reading(table_name, -1)
 
 
 	@_dictify_select
