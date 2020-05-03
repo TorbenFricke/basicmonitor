@@ -49,13 +49,13 @@ class TriggerApi(Resource):
 			clean = validators.apply_validation_mask(data, _validation_mask)
 
 			# make the trigger
-			cls = Trigger(**clean)
+			trigger = Trigger(**clean)
 
 		except Exception as e:
 			return {"message": str(e)}
 
 		trigger_manager = state.get_trigger_manager()
-		trigger_manager.add(cls)
+		trigger_manager.add(trigger )
 
-		return cls.to_dict()
+		return trigger .to_dict()
 

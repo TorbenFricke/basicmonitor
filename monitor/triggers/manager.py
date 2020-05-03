@@ -62,3 +62,9 @@ class TriggerManager(object):
 		self.triggers = self.db.load_objects(self.trigger_table, Trigger.from_json)
 		for trigger in self.triggers:
 			self.link_trigger(trigger)
+
+
+	def __getitem__(self, uid):
+		for t in self.triggers:
+			if uid == t.id:
+				return t

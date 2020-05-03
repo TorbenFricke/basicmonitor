@@ -15,7 +15,8 @@ class Trigger(object):
 
 		# guts
 		self.expression = expression
-		self._variables = variables
+		self._variables = []
+		self.variables = variables
 		self.broken = False
 
 		# remember linked sensors
