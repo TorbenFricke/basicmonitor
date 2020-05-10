@@ -31,17 +31,17 @@ def get_state():
 	return _state
 
 
-def get_db():
+def get_db() -> Database:
 	return get_state()["db"]
 
 
-def get_sensor_manager():
+def get_sensor_manager() -> SensorManager:
 	return get_state()["sensor_manager"]
 
 
-def get_event_manager():
+def get_event_manager() -> EventManager:
 	return get_state()["event_manager"]
 
 
-def get_trigger_manager():
+def get_trigger_manager() -> TriggerManager:
 	return get_state()["trigger_manager"]

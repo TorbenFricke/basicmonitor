@@ -14,6 +14,18 @@ def _dictify_select(f):
 	return wrapped
 
 
+def _listify_select(f):
+	def wrapped(*args, **kwargs):
+		selection = f(*args, **kwargs)
+		columns = [keys[0] for keys in selection.description]
+		out = defaultdict(list)
+		for row in selection.fetchall():
+			for key, value in zip(columns, row):
+				out[key].append(value)
+		return out
+	return wrapped
+
+
 def sanitize_characters(string, replace_invalid_with=""):
 	for character in string:
 		point = ord(character)
@@ -93,19 +105,45 @@ class Database(object):
 
 
 	@_dictify_select
+	def fetch_columns(self, table_name, columns, LIMIT=1000):
+		table_name = _scrub_table_name(table_name)
+		columns = set(columns) & set(self.columns(table_name))
+		return self.execute(
+			f"SELECT {','.join(columns)} from {table_name} LIMIT {abs(int(LIMIT))}"
+		)
+
+
+	@_dictify_select
 	def fetch_nth_reading(self, table_name, idx):
 		table_name = _scrub_table_name(table_name)
 		idx = int(idx)
 		if idx > 0:
 			return self.execute(
-				"SELECT * from {} LIMIT 1 OFFSET {};".format(table_name, "time", idx)
+				f"SELECT * from {table_name} LIMIT 1 OFFSET {idx};"
 			)
 		else:
 			idx = abs(idx) + 1
 			return self.execute(
-				"SELECT * from {} ORDER BY {} DESC LIMIT 1 OFFSET {};".format(table_name, "time", idx)
+				f"SELECT * from {table_name} ORDER BY time DESC LIMIT 1 OFFSET {idx};"
 			)
 
+
+	@_dictify_select
+	def fetch_columns_nth(self, table_name, columns, idx):
+		table_name = _scrub_table_name(table_name)
+		columns = set(columns) & set(self.columns(table_name))
+		columns_str = ','.join(columns)
+
+		idx = int(idx)
+		if idx > 0:
+			return self.execute(
+				f"SELECT {columns_str} from {table_name} LIMIT 1 OFFSET {idx};"
+			)
+		else:
+			idx = abs(idx) + 1
+			return self.execute(
+				f"SELECT {columns_str} from {table_name} ORDER BY time DESC LIMIT 1 OFFSET {idx};"
+			)
 
 	def fetch_last_reading(self, table_name):
 		return self.fetch_nth_reading(table_name, -1)
