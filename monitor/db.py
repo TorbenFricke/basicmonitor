@@ -107,7 +107,10 @@ class Database(object):
 	@_dictify_select
 	def fetch_columns(self, table_name, columns, LIMIT=1000):
 		table_name = _scrub_table_name(table_name)
-		columns = set(columns) & set(self.columns(table_name))
+		if "*" in columns:
+			columns = ["*"]
+		else:
+			columns = set(columns) & set(self.columns(table_name))
 		return self.execute(
 			f"SELECT {','.join(columns)} from {table_name} LIMIT {abs(int(LIMIT))}"
 		)
@@ -131,7 +134,10 @@ class Database(object):
 	@_dictify_select
 	def fetch_columns_nth(self, table_name, columns, idx):
 		table_name = _scrub_table_name(table_name)
-		columns = set(columns) & set(self.columns(table_name))
+		if "*" in columns:
+			columns = ["*"]
+		else:
+			columns = set(columns) & set(self.columns(table_name))
 		columns_str = ','.join(columns)
 
 		idx = int(idx)

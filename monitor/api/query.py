@@ -10,6 +10,7 @@ class Query(Resource):
 
 		# get requested column, default to all
 		try:
+			assert "column" in request.args
 			column = request.args.get("column")
 			columns = ["time", column]
 		except:
