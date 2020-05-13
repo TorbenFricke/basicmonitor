@@ -82,7 +82,7 @@ class SensorApi(Resource):
 		return sensor.to_flat_dict()
 
 
-class SensorListApi(Resource):
+class SensorDeleteUpdateApi(Resource):
 	def get(self, sensor_id):
 		sensor = state.get_sensor_manager()[sensor_id]
 		if sensor is None:

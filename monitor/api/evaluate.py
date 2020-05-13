@@ -13,12 +13,12 @@ class Evaluate(Resource):
 					expression=data["expression"],
 		            variables=data["variables"],
 		            sensor_manager=state.get_sensor_manager()),
-				"worked": True
+				"error": False
 			}
 		except Exception as e:
 			out = {
 				"message": str(e),
-				"worked": True,
+				"error": True,
 			}
 
 		return out

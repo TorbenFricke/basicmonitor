@@ -6,21 +6,23 @@ from monitor.triggers import Trigger
 
 
 def make_variables_validator():
-	all_channels = [cls.channels.keys() for cls in sensors.Sensor.__subclasses__()]
+	all_channels = ["time"] + [cls.channels.keys() for cls in sensors.Sensor.__subclasses__()]
 	variables_mask = {
 		"id": None,
-		"row": None,
+		"row": validators.integer,
 		"channel": validators.whitelist(all_channels),
 	}
 
 	def wrapped(variables):
-		out = []
-		for var in variables.values():
+		out = {}
+		for key, var in variables.items():
 			clean = validators.apply_validation_mask(var, variables_mask)
+
+			# make sure all information for a variable is present
 			for key in variables_mask.keys():
 				assert key in clean
 
-			out.append(clean)
+			out[key] = clean
 
 		return out
 
@@ -36,7 +38,7 @@ _validation_mask = {
 }
 
 
-
+# list and create triggers
 class TriggerApi(Resource):
 	def get(self):
 		return [trigger.to_dict() for trigger in state.get_trigger_manager().triggers]
@@ -59,3 +61,9 @@ class TriggerApi(Resource):
 
 		return trigger .to_dict()
 
+
+
+# trigger detail
+class TriggerDetailApi(Resource):
+	def get(self, trigger_id):
+		return state.get_trigger_manager()[trigger_id].to_dict()
