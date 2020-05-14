@@ -1,13 +1,16 @@
 from monitor.helpers import uid
+from monitor.dataModels import SerializableObject
 import json, time
 
 
 def do_nothing(*args): pass
 
 
-class Sensor(object):
+class Sensor(SerializableObject):
 	channels = {}
 	"""provide Channel information in subclasses. Must be overwritten in subclasses"""
+
+	_serialize_blacklist = ["update_handler"]
 
 	def __init__(self, name="sensor", interval=5*60, **kwargs):
 		# was the channel information provided?
@@ -30,30 +33,19 @@ class Sensor(object):
 
 		# remember keyword arguments to be accessible by subclasses later. Compared to hard coding new attributes, this
 		# has the advantage that the serialization stays the same.
-		self.kwargs = kwargs
+		for key, value in kwargs.items():
+			if not key in self.__dict__:
+				self.__dict__[key] = value
 
 		# run validation handled by subclass
 		self.validate()
 
 
 	def to_dict(self):
-		# Attributes of this opject, that will be serialized
-		whitelist = ["id", "name", "interval", "enabled", "kwargs", "last_update", "retain_for"]
-		attributes = {key: self.__dict__[key] for key in whitelist if key in self.__dict__}
-		# also save the type
+		attributes = SerializableObject.to_dict(self)
+		# also save the type (ie. subclass)
 		attributes["type"] = str(self.__class__.__name__)
 		return attributes
-
-
-	def to_flat_dict(self):
-		d = self.to_dict()
-		kwargs = d.pop("kwargs")
-		d.update(kwargs)
-		return d
-
-
-	def to_json(self):
-		return json.dumps(self.to_dict(), sort_keys=True)
 
 
 	@classmethod
@@ -68,7 +60,7 @@ class Sensor(object):
 
 		# remove stuff we do not want to show up in the kwargs of the loaded object
 		d.pop("type")
-		d.update(d.pop("kwargs"))
+		d.update(d.pop("kwargs", {}))
 		return subclass(**d)
 
 

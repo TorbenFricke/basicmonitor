@@ -12,14 +12,14 @@ class HTML(Sensor):
 
 	def validate(self):
 		# url was provided?
-		if not "url" in self.kwargs:
+		if not "url" in self.__dict__:
 			raise KeyError("HTML error needs 'url' argument")
 
 
 	def fetch(self):
 		data = {}
 		try:
-			req = requests.get(self.kwargs.get("url"))
+			req = requests.get(self.__dict__.get("url"))
 		except Exception as e:
 			return data
 		data["content"] = req.text

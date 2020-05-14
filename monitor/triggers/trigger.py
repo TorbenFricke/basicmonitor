@@ -1,11 +1,15 @@
 from monitor.helpers import uid
 from monitor.triggers import parser
+from monitor.dataModels import SerializableObject
 import time, json
 
 def do_nothing(*args): pass
 
 
-class Trigger(object):
+class Trigger(SerializableObject):
+	channels = {"state": bool}
+	_serialize_blacklist = ["broken", "_variables", "linked_sensors", "on_check", "update_handler"]
+
 	def __init__(self, variables=None, expression="", **kwargs):
 		# general info
 		self.id = kwargs.pop("id", uid())
@@ -19,8 +23,12 @@ class Trigger(object):
 		# guts
 		self.expression = expression
 		self._variables = None
+		# sensors will be linked when setting the variables using the setter method
 		self.variables = variables
 		self.broken = False
+
+		# update handler function
+		self.update_handler = do_nothing
 
 		# keep track of the last update
 		self.last_update = kwargs.pop("last_update", -1)
@@ -69,18 +77,6 @@ class Trigger(object):
 
 
 	def to_dict(self):
-		# Attributes of this opject, that will be serialized
-		whitelist = ["id", "name", "enabled", "retain_for", "last_update", "expression"]
-		attributes = {key: self.__dict__[key] for key in whitelist if key in self.__dict__}
-		attributes["variables"] = self.variables
-		return attributes
-
-
-	def to_json(self):
-		return json.dumps(self.to_dict(), sort_keys=True)
-
-
-	@classmethod
-	def from_json(cls, js):
-		d = json.loads(js)
-		return cls(**d)
+		out = SerializableObject.to_dict(self)
+		out["variables"] = self.variables
+		return out

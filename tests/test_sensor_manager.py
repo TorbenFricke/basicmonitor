@@ -4,15 +4,15 @@ from monitor.sensors import HTML, Uptime
 from monitor.db import Database
 
 
-def update(db, s):
-	n_rows_before = len(db.fetch_all(db.sensor_prefix + s.id))
+def update(db, s, prefix):
+	n_rows_before = len(db.fetch_all(prefix + s.id))
 	s.update()
-	rows = db.fetch_all(db.sensor_prefix + s.id)
+	rows = db.fetch_all(prefix + s.id)
 	assert len(rows) - n_rows_before == 1
 	assert rows[-1]["seconds"] > 0
 
 	s.update()
-	rows = db.fetch_all(db.sensor_prefix + s.id)
+	rows = db.fetch_all(prefix + s.id)
 	assert len(rows) - n_rows_before == 2
 	assert rows[-1]["seconds"] > rows[-2]["seconds"]
 
@@ -38,7 +38,7 @@ class SensorManagerTest(TestCase):
 		# also saves the new sensor to the DB
 		manager.add(s)
 		manager.load()
-		assert len(manager.sensors) == 1
+		assert len(manager.items) == 1
 		assert manager[s.id].to_json() == s.to_json()
 
 
@@ -48,10 +48,10 @@ class SensorManagerTest(TestCase):
 		s.update()
 		manager.add(s)
 
-		rows = db.fetch_all(db.sensor_prefix + s.id)
+		rows = db.fetch_all(manager.readings_table_prefix + s.id)
 		assert len(rows) == 0
 
-		update(db, s)
+		update(db, s, manager.readings_table_prefix)
 
 
 	@test_context
@@ -59,13 +59,13 @@ class SensorManagerTest(TestCase):
 		s = Uptime()
 		manager.add(s)
 
-		update(db, s)
-		assert len(db.fetch_all(db.sensor_prefix + s.id)) == 2
+		update(db, s, manager.readings_table_prefix)
+		assert len(db.fetch_all(manager.readings_table_prefix + s.id)) == 2
 
 		manager.load()
-		update(db, s)
+		update(db, s, manager.readings_table_prefix)
 
-		assert len(db.fetch_all(db.sensor_prefix + s.id)) == 4
+		assert len(db.fetch_all(manager.readings_table_prefix + s.id)) == 4
 
 
 	@test_context
@@ -77,11 +77,11 @@ class SensorManagerTest(TestCase):
 		id2 = add(manager, s)
 		id3 = add(manager, Uptime())
 
-		assert len(manager.sensors) == 3
+		assert len(manager.items) == 3
 
 		manager.delete(id2)
 
-		assert len(manager.sensors) == 2
+		assert len(manager.items) == 2
 		assert manager[id1].id == id1
 		assert manager[id2] is None
 		assert manager[id3].id == id3
@@ -99,7 +99,7 @@ class SensorManagerTest(TestCase):
 		# table gone?
 		assert not any([id in tab_name for tab_name in db.list_tables()])
 
-		rows = db.fetch_all("sensors")
+		rows = db.fetch_all(manager.item_table)
 		for row_id, js in rows:
 			assert id != row_id
 

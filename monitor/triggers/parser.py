@@ -8,8 +8,8 @@ default_values = {
 }
 
 
-def get_row(db, id, row_idx):
-	return db.fetch_nth_reading(db.sensor_prefix + id, row_idx)[0]
+def get_row(db, id, row_idx, prefix):
+	return db.fetch_nth_reading(prefix + id, row_idx)[0]
 
 
 def get_variable(path, sensor_manager):
@@ -22,7 +22,7 @@ def get_variable(path, sensor_manager):
 			raise TypeError("path must provide a {}".format(key))
 
 	db = sensor_manager.db
-	row = get_row(db, path["id"], path["row"])
+	row = get_row(db, path["id"], path["row"], sensor_manager.readings_table_prefix)
 	value = row[path["channel"]]
 
 	if value is None:

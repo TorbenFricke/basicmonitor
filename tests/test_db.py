@@ -6,7 +6,7 @@ from monitor.sensors import HTML, CPUPercentage, Sensor
 
 # make test Database
 db = Database(":memory:", echo=False)
-
+prefix = "prefix-"
 
 def make_sensors():
 	"""makes two dummy sensors"""
@@ -66,18 +66,18 @@ class DBTest(TestCase):
 
 	def test_make_channel_table(self):
 		sensor = HTML(url="http://google.com")
-		table_name = db.channel_table(sensor)
+		table_name = db.channel_table(sensor, prefix)
 		assert "elapsed" in db.columns(table_name)
 		db.drop(table_name)
 
 
 	def test_save_data_channel_table(self):
 		sensor = HTML(url="http://google.com")
-		table_name = db.channel_table(sensor)
+		table_name = db.channel_table(sensor, prefix)
 		data = []
 		for i in range(3):
 			data.append(sensor.update())
-			db.insert_reading(sensor.id, data[-1])
+			db.insert_reading(sensor.id, data[-1], prefix)
 		new_data = db.fetch_all(table_name)
 		for old, new in zip(data, new_data):
 			for key, old_value in old.items():
@@ -151,8 +151,8 @@ class DBTest(TestCase):
 
 	def test_remove_old_readings(self):
 		sensor = CPUPercentage()
-		table_name = db.sensor_prefix + sensor.id
-		db.channel_table(sensor)
+		table_name = prefix + sensor.id
+		db.channel_table(sensor, prefix)
 
 		i = 0
 		def dummy_data():
@@ -164,7 +164,7 @@ class DBTest(TestCase):
 			}
 
 		for _ in range(20):
-			db.insert_reading(sensor.id, dummy_data())
+			db.insert_reading(sensor.id, dummy_data(), prefix)
 
 		older_than = 5
 

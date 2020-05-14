@@ -6,7 +6,7 @@ class CPUPercentage(Sensor):
 	channels = {"percentage": float}
 
 	def fetch(self):
-		return psutil.cpu_percent(interval=self.kwargs.get("psutil_interval", 0.5))
+		return psutil.cpu_percent(interval=self.__dict__.get("psutil_interval", 0.5))
 
 
 class RAMPercentage(Sensor):

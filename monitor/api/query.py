@@ -6,7 +6,8 @@ from monitor import state
 class Query(Resource):
 	def get(self, sensor_id):
 		db = state.get_db()
-		table = db.sensor_prefix + sensor_id
+		prefix = state.get_sensor_manager().readings_table_prefix
+		table = prefix + sensor_id
 
 		# get requested column, default to all
 		try:

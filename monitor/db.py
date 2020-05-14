@@ -53,9 +53,6 @@ class Database(object):
 		self.echo = kwargs.pop("echo", False)
 		self.path = path
 
-		# general
-		self.sensor_prefix = "sensor-"
-
 		# make a db connection and corresponding lock
 		self.connection = sql.connect(self.path, check_same_thread=False)
 		self.lock = threading.Lock()
@@ -231,9 +228,9 @@ class Database(object):
 
 
 	## channel related stuff
-	def channel_table(self, sensor):
+	def channel_table(self, sensor, prefix):
 		# Creating the columns str is not safe against sql injection. Only use this function when safe!
-		table_name = self.sensor_prefix + sensor.id
+		table_name = prefix + sensor.id
 		table_name = _scrub_table_name(table_name)
 
 		# TODO add compression support using https://docs.python.org/3/library/zlib.html
@@ -242,6 +239,7 @@ class Database(object):
 			float: "real",
 			str: "text",
 			int: "int",
+			bool: "bool",
 		}
 
 		columns = [
@@ -254,12 +252,11 @@ class Database(object):
 			"CREATE TABLE IF NOT EXISTS {} {}".format(table_name, columns_str),
 			commit=True
 		)
-		self.columns(table_name)
 		return table_name
 
 
-	def insert_reading(self, id, data):
-		table_name = _scrub_table_name(self.sensor_prefix + id)
+	def insert_reading(self, id, data, prefix):
+		table_name = _scrub_table_name(prefix + id)
 		columns = self.columns(table_name)
 
 		d = defaultdict(None)

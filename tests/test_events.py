@@ -54,7 +54,7 @@ class SensorManagerTest(TestCase):
 		sensor_manager.add(Uptime())
 		sensor_manager.add(Uptime())
 		sensor_manager.add(Uptime())
-		sensor_manager.delete(sensor_manager.sensors[2].id)
+		sensor_manager.delete(sensor_manager.items[2].id)
 		time.sleep(0.2)
 
 		assert t.no_calls == 5

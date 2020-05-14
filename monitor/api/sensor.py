@@ -23,7 +23,7 @@ class SensorDetailApi(Resource):
 		if sensor is None:
 			abort(404)
 
-		data = sensor.to_flat_dict()
+		data = sensor.to_dict()
 		data["last_reading"] = sensor_manager.last_reading(sensor_id)
 		return data
 
@@ -54,12 +54,12 @@ class SensorDetailApi(Resource):
 		except Exception as e:
 			return {"message": str(e)}
 
-		return sensor.to_flat_dict()
+		return sensor.to_dict()
 
 
 class SensorApi(Resource):
 	def get(self):
-		return [sensor.to_flat_dict() for sensor in state.get_sensor_manager().sensors]
+		return [sensor.to_dict() for sensor in state.get_sensor_manager().items]
 
 
 	def post(self):
@@ -79,7 +79,7 @@ class SensorApi(Resource):
 		sensor_manager.add(sensor)
 		# update sensor asynchronously
 		sensor_manager.updater.cmd(sensor.update)
-		return sensor.to_flat_dict()
+		return sensor.to_dict()
 
 
 class SensorDeleteUpdateApi(Resource):
