@@ -41,12 +41,9 @@ class SensorDetailApi(Resource):
 		data = request.get_json(force=True)
 		try:
 			clean = validators.apply_validation_mask(data, _validation_mask)
-			kwargs = sensor.kwargs
 			for key, value in clean.items():
 				if key in sensor.__dict__:
 					setattr(sensor, key, value)
-				if key in kwargs:
-					kwargs[key] = value
 
 			# trigger event
 			state.get_event_manager().on_sensor_edit(sensor.id)
