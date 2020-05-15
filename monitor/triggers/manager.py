@@ -12,8 +12,9 @@ class EventWorker(threading.Thread):
 
 	def run(self):
 		for event in self.parent.event_manager.subscribe():
+			self.parent.handle_event(event)
 			try:
-				self.parent.handle_event(event)
+				pass
 			except:
 				pass
 
@@ -36,10 +37,14 @@ class TriggerManager(ItemManager):
 
 
 	def handle_event(self, event):
-		if not event.message == "sensor updated":
+		if not event["message"] == "sensor updated":
 			return
 
-		sensor_id = event.id
+		sensor_id = event["data"]["id"]
 		for trigger in self.items:
 			if sensor_id in trigger.linked_sensors:
-				trigger.check(self.sensor_manager)
+				print(f"updating {trigger.name}, because sensor {self.sensor_manager[sensor_id].name} was updated")
+				try:
+					trigger.update(self.sensor_manager)
+				except:
+					pass

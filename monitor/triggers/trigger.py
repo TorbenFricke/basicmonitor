@@ -38,23 +38,25 @@ class Trigger(SerializableObject):
 	def update(self, sensor_manager):
 		t = time.time()
 
-		state = self.evaluate(sensor_manager)
-		if not state in [True, False]:
+		try:
+			state = self.evaluate(sensor_manager)
+			assert state in [True, False]
+		except:
 			self.broken = True
 			state = None
 
 		# remember the last update
 		self.last_update = t
 
-		info = {
+		reading = {
 			"time": t,
 			"state": state,
 		}
 
 		# event
-		self.update_handler(info)
+		self.update_handler(self.id, reading)
 
-		return info
+		return reading
 
 
 	@property

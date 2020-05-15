@@ -10,7 +10,8 @@ class EventManager(object):
 		self.sensor_manager.on_update = self._basic_on_event_handler("sensor updated")
 
 		self.on_sensor_edit = self._basic_on_event_handler("sensor edited")
-		"""To be called manually. For example: event_manager.on_sensor_edit({"id": "123456"})"""
+		self.on_trigger_edit = self._basic_on_event_handler("trigger edited")
+		"""To be called manually. For example: event_manager.on_trigger_edit({"id": "123456"})"""
 
 		self.subscriptions = collections.defaultdict(Queue)
 
