@@ -8,7 +8,7 @@ from monitor.triggers import Trigger
 def make_variables_validator():
 	all_channels = ["time"] + [cls.channels.keys() for cls in sensors.Sensor.__subclasses__()]
 	variables_mask = {
-		"id": None,
+		"id": validators.string,
 		"row": validators.integer,
 		"channel": validators.whitelist(all_channels),
 	}
@@ -31,9 +31,9 @@ def make_variables_validator():
 
 
 _validation_mask = {
-	"name": None,
+	"name": validators.string,
 	"retain_for": validators.number_greater_than(60*60), # at least one hour
-	"expression": None,
+	"expression": validators.string,
 	"variables": make_variables_validator()
 }
 

@@ -8,11 +8,11 @@ from monitor.sensors import sensors_available
 
 _validation_mask = {
 	"interval": validators.number_greater_than(29),
-	"retain_for": validators.number_greater_than(60*60), # at lesat one hour
-	"name": None,
+	"retain_for": validators.number_greater_than(60*60), # at least one hour
+	"name": validators.string,
 	"enabled": validators.boolean,
 	"type": validators.whitelist(sensors_available),
-	"url": None,
+	"url": validators.string,
 }
 
 

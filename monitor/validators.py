@@ -38,6 +38,10 @@ def boolean(value):
 		return False
 
 
+def string(value):
+	return str(value)
+
+
 def is_type(type_str):
 	def wrapped(value):
 		assert type(value) == type_str, "Type does not match {}".format(type_str)
