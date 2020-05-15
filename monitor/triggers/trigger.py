@@ -8,7 +8,7 @@ def do_nothing(*args): pass
 
 class Trigger(SerializableObject):
 	channels = {"state": bool}
-	_serialize_blacklist = ["broken", "_variables", "linked_sensors", "on_check", "update_handler"]
+	_serialize_blacklist = ["on_check", "update_handler"]
 
 	def __init__(self, variables=None, expression="", **kwargs):
 		# general info
@@ -17,37 +17,31 @@ class Trigger(SerializableObject):
 		self.retain_for = kwargs.pop("retain_for", 90 * 24 * 60 * 60)
 		self.enabled = kwargs.pop("enabled", True)
 
-		# remember linked sensors
-		self.linked_sensors = set()
 
 		# guts
 		self.expression = expression
-		self._variables = None
-		# sensors will be linked when setting the variables using the setter method
 		self.variables = variables
 		self.broken = False
 
-		# update handler function
+		# update handler
 		self.update_handler = do_nothing
 
 		# keep track of the last update
 		self.last_update = kwargs.pop("last_update", -1)
 
-		# events
-		self.on_check = do_nothing
 
 
 	def evaluate(self, sensor_manager):
 		return parser.evaluate(self.expression, self.variables, sensor_manager)
 
 
-	def check(self, sensor_manager):
+	def update(self, sensor_manager):
 		t = time.time()
 
 		state = self.evaluate(sensor_manager)
 		if not state in [True, False]:
 			self.broken = True
-			return
+			state = None
 
 		# remember the last update
 		self.last_update = t
@@ -58,25 +52,16 @@ class Trigger(SerializableObject):
 		}
 
 		# event
-		self.on_check(info)
+		self.update_handler(info)
 
 		return info
 
 
 	@property
-	def variables(self):
-		return self._variables
-
-
-	@variables.setter
-	def variables(self, value):
-		self._variables = value
-		self.linked_sensors = set()
-		for variable in value.values():
-			self.linked_sensors.add(variable["id"])
+	def linked_sensors(self):
+		return set([variable["id"] for variable in self.variables.values()])
 
 
 	def to_dict(self):
 		out = SerializableObject.to_dict(self)
-		out["variables"] = self.variables
 		return out

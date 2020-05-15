@@ -1,4 +1,5 @@
 from monitor.triggers.trigger import Trigger
+from monitor.data_models import ItemManager
 import threading
 
 
@@ -17,31 +18,21 @@ class EventWorker(threading.Thread):
 				pass
 
 
-class TriggerManager(object):
+class TriggerManager(ItemManager):
 	def __init__(self, db, sensor_manager, event_manager):
-		self.db = db
+		ItemManager.__init__(self,
+			db=db,
+			item_factory_function=Trigger.from_json,
+			item_table_name="triggers",
+			reading_table_prefix="trigger-"
+		)
+		# other managers
 		self.sensor_manager = sensor_manager
 		self.event_manager = event_manager
-
-		# set up the database
-		self.trigger_table = db.object_table("triggers")
-
-		# list of triggers
-		self.triggers = []
 
 		# set up the worker
 		self.event_worker = EventWorker(self)
 		self.event_worker.start()
-
-
-	def add(self, trigger: Trigger):
-		self.link_trigger(trigger)
-		self.triggers.append(trigger)
-
-
-	def link_trigger(self, trigger):
-		# TODO events, database
-		pass
 
 
 	def handle_event(self, event):
@@ -49,22 +40,6 @@ class TriggerManager(object):
 			return
 
 		sensor_id = event.id
-		for trigger in self.triggers:
+		for trigger in self.items:
 			if sensor_id in trigger.linked_sensors:
 				trigger.check(self.sensor_manager)
-
-
-	def save(self):
-		self.db.save_objects(self.trigger_table, self.triggers)
-
-
-	def load(self):
-		self.triggers = self.db.load_objects(self.trigger_table, Trigger.from_json)
-		for trigger in self.triggers:
-			self.link_trigger(trigger)
-
-
-	def __getitem__(self, uid):
-		for t in self.triggers:
-			if uid == t.id:
-				return t

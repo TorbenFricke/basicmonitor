@@ -72,6 +72,11 @@ class ItemManager(object):
 			})
 
 		# handle updates
+		if not "update_handler" in item.__dict__:
+			print("Warning: {} was unable to find update_handler function in class {}".format(
+				self.__class__.__name__,
+				item.__class__.__name__
+			))
 		item.update_handler = update_handler
 
 

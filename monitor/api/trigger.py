@@ -41,7 +41,7 @@ _validation_mask = {
 # list and create triggers
 class TriggerApi(Resource):
 	def get(self):
-		return [trigger.to_dict() for trigger in state.get_trigger_manager().triggers]
+		return [trigger.to_dict() for trigger in state.get_trigger_manager().items]
 
 
 	def post(self):
