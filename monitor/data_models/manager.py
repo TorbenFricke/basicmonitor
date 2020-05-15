@@ -28,9 +28,10 @@ class RemoveOldReadingsWorker(threading.Thread):
 
 
 class ItemManager(object):
-	def __init__(self, db, item_table_name, reading_table_prefix, item_factory_function):
+	def __init__(self, db, item_table_name, reading_table_prefix, item_factory_function, item_name):
 		self.items = []
 		self.db = db
+		self.item_name = item_name
 		self.item_table = db.object_table(item_table_name)
 		self.readings_table_prefix = reading_table_prefix
 		self.item_factory_function = item_factory_function

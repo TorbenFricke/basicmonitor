@@ -3,17 +3,25 @@ import collections, threading
 
 
 class EventManager(object):
-	def __init__(self, sensor_manager):
-		self.sensor_manager = sensor_manager
-		self.sensor_manager.on_add_item = self._basic_on_event_handler("sensor added")
-		self.sensor_manager.on_delete_item = self._basic_on_event_handler("sensor deleted")
-		self.sensor_manager.on_update = self._basic_on_event_handler("sensor updated")
+	def __init__(self, *args):
+		for manager in args:
+			manager.on_add_item = self._basic_on_event_handler(manager.item_name + " added")
+			manager.on_delete_item = self._basic_on_event_handler(manager.item_name + " deleted")
+			manager.on_update = self._basic_on_event_handler(manager.item_name + " updated")
 
-		self.on_sensor_edit = self._basic_on_event_handler("sensor edited")
+		# these have to be called manually
 		self.on_trigger_edit = self._basic_on_event_handler("trigger edited")
 		"""To be called manually. For example: event_manager.on_trigger_edit({"id": "123456"})"""
+		self.on_sensor_edit = self._basic_on_event_handler("sensor edited")
+		"""To be called manually. For example: event_manager.on_sensor_edit({"id": "123456"})"""
 
 		self.subscriptions = collections.defaultdict(Queue)
+
+
+	def link_manager(self, manager):
+		manager.on_add_item = self._basic_on_event_handler(manager.item_name + " added")
+		manager.on_delete_item = self._basic_on_event_handler(manager.item_name + " deleted")
+		manager.on_update = self._basic_on_event_handler(manager.item_name + " updated")
 
 
 	def cleanup_dead_threads(self):

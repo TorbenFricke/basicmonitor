@@ -62,6 +62,7 @@ class SensorManager(ItemManager):
 		                     db=db,
 		                     item_table_name="sensors",
 		                     reading_table_prefix="sensor-",
+		                     item_name="sensor",
 		                     item_factory_function=Sensor.from_json
 		                     )
 		self.updater = UpdateWorker(self)

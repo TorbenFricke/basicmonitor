@@ -23,6 +23,7 @@ def get_state():
 			# create trigger manager
 			trigger_manager = TriggerManager(db=db, sensor_manager=sensor_manager, event_manager=event_manager)
 			trigger_manager.load()
+			event_manager.link_manager(trigger_manager)
 
 			_state["db"] = db
 			_state["sensor_manager"] = sensor_manager
