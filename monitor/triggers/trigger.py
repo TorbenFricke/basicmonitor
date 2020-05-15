@@ -1,6 +1,6 @@
 from monitor.helpers import uid
 from monitor.triggers import parser
-from monitor.dataModels import SerializableObject
+from monitor.data_models import SerializableObject
 import time, json
 
 def do_nothing(*args): pass

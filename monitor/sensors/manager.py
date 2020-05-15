@@ -1,6 +1,6 @@
 import threading, queue, time
 from monitor.sensors import Sensor
-from monitor.dataModels import ItemManager
+from monitor.data_models import ItemManager
 
 def do_nothing(*args): pass
 

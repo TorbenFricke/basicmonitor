@@ -1,5 +1,5 @@
 from monitor.helpers import uid
-from monitor.dataModels import SerializableObject
+from monitor.data_models import SerializableObject
 import json, time
 
 
