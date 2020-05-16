@@ -92,7 +92,7 @@ class ItemManager(object):
 			self.db.drop(self.readings_table_prefix + uid)
 
 			# trigger event
-			self.on_delete_item(uid)
+			self.on_delete_item({"id": uid})
 
 			return True
 		return False

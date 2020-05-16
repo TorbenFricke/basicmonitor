@@ -46,7 +46,7 @@ class SensorDetailApi(Resource):
 					setattr(sensor, key, value)
 
 			# trigger event
-			state.get_event_manager().on_sensor_edit(sensor.id)
+			state.get_event_manager().on_sensor_edit({"id": sensor.id})
 
 		except Exception as e:
 			return {"message": str(e)}
@@ -79,17 +79,11 @@ class SensorApi(Resource):
 		return sensor.to_dict()
 
 
-class SensorDeleteUpdateApi(Resource):
+class SensorUpdateApi(Resource):
 	def get(self, sensor_id):
 		sensor = state.get_sensor_manager()[sensor_id]
 		if sensor is None:
 			abort(404)
 
 		return sensor.update()
-
-
-	def delete(self, sensor_id):
-		state.get_sensor_manager().delete(sensor_id)
-		return "delted {}".format(sensor_id)
-
 

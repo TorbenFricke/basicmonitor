@@ -88,10 +88,19 @@ class TriggerDetailApi(Resource):
 					setattr(trigger, key, value)
 
 			# trigger event
-			state.get_event_manager().on_trigger_edit(trigger.id)
+			state.get_event_manager().on_trigger_edit({"id": trigger.id})
 
 		except Exception as e:
 			return {"message": str(e)}
 
 		return trigger.to_dict()
 
+
+# update trigger
+class TriggerUpdateApi(Resource):
+	def get(self, trigger_id):
+		trigger = state.get_trigger_manager()[trigger_id]
+		if trigger is None:
+			abort(404)
+
+		return trigger.update(state.get_sensor_manager())
