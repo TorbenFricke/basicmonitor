@@ -3,6 +3,7 @@ from flask_restful import Resource, request, abort
 from monitor import validators, state
 from monitor import sensors
 from monitor.triggers import Trigger
+from monitor.api.base import DetailApi, ListCreateApi
 
 
 # make the custom variables validator
@@ -40,66 +41,28 @@ _validation_mask = {
 
 
 # list and create triggers
-class TriggerApi(Resource):
-	def get(self):
-		return [trigger.to_dict() for trigger in state.get_trigger_manager().items]
-
-
-	def post(self):
-		data = request.get_json(force=True)
-
-		try:
-			clean = validators.apply_validation_mask(data, _validation_mask)
-
-			# make the trigger
-			trigger = Trigger(**clean)
-
-		except Exception as e:
-			return {"message": str(e)}
-
-		trigger_manager = state.get_trigger_manager()
-		trigger_manager.add(trigger)
-
-		return trigger.to_dict()
-
+class TriggerApi(ListCreateApi):
+	def __init__(self):
+		ListCreateApi.__init__(self,
+			manager_provider=state.get_trigger_manager,
+			validation_mask=_validation_mask,
+		    item_class=Trigger,
+		)
 
 
 # trigger detail
-class TriggerDetailApi(Resource):
-	def get(self, trigger_id):
-		return state.get_trigger_manager()[trigger_id].to_dict()
-
-
-	def delete(self, trigger_id):
-		state.get_trigger_manager().delete(trigger_id)
-		return "deleted {}".format(trigger_id)
-
-
-	def put(self, trigger_id):
-		trigger = state.get_trigger_manager()[trigger_id]
-		if trigger is None:
-			abort(404)
-
-		data = request.get_json(force=True)
-		try:
-			clean = validators.apply_validation_mask(data, _validation_mask)
-			for key, value in clean.items():
-				if key in trigger.__dict__:
-					setattr(trigger, key, value)
-
-			# trigger event
-			state.get_event_manager().on_trigger_edit({"id": trigger.id})
-
-		except Exception as e:
-			return {"message": str(e)}
-
-		return trigger.to_dict()
+class TriggerDetailApi(DetailApi):
+	def __init__(self):
+		DetailApi.__init__(self,
+			manager_provider=state.get_trigger_manager,
+			validation_mask=_validation_mask
+		)
 
 
 # update trigger
 class TriggerUpdateApi(Resource):
-	def get(self, trigger_id):
-		trigger = state.get_trigger_manager()[trigger_id]
+	def get(self, item_id):
+		trigger = state.get_trigger_manager()[item_id]
 		if trigger is None:
 			abort(404)
 

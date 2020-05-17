@@ -40,6 +40,7 @@ class ItemManager(object):
 		self.on_add_item = do_nothing
 		self.on_delete_item = do_nothing
 		self.on_update = do_nothing
+		self.on_edit = do_nothing
 
 		# remove old database entries worker
 		self.remove_old_worker = RemoveOldReadingsWorker(self)

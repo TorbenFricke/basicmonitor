@@ -25,12 +25,12 @@ from monitor.api.evaluate import Evaluate
 
 # list sensors and add new ones
 api.add_resource(SensorApi, '/sensors', '/sensors/')
-api.add_resource(SensorDetailApi, '/sensors/<string:sensor_id>')
-api.add_resource(SensorUpdateApi, '/sensors/<string:sensor_id>/update')
+api.add_resource(SensorDetailApi, '/sensors/<string:item_id>')
+api.add_resource(SensorUpdateApi, '/sensors/<string:item_id>/update')
 # triggers
 api.add_resource(TriggerApi, '/triggers', '/triggers/')
-api.add_resource(TriggerDetailApi, '/triggers/<string:trigger_id>')
-api.add_resource(TriggerUpdateApi, '/triggers/<string:trigger_id>/update')
+api.add_resource(TriggerDetailApi, '/triggers/<string:item_id>')
+api.add_resource(TriggerUpdateApi, '/triggers/<string:item_id>/update')
 # events
 api.add_resource(EventsApi, '/events')
 # database queries
