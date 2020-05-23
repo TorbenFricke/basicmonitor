@@ -56,7 +56,7 @@ class ItemManager(object):
 		self.items.append(item)
 		self.link_item(item)
 
-		self.save()
+		self.save(item.id)
 
 		# trigger event
 		self.on_add_item(item.to_dict())
@@ -105,8 +105,11 @@ class ItemManager(object):
 			return readings[-1]
 
 
-	def save(self):
-		self.db.save_objects(self.item_table, self.items)
+	def save(self, id=None):
+		if id is None:
+			self.db.save_objects(self.item_table, self.items)
+		else:
+			self.db.save_object(self.item_table, self[id])
 
 
 	def load(self):

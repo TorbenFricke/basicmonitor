@@ -5,10 +5,7 @@ import collections, threading
 class EventManager(object):
 	def __init__(self, *args):
 		for manager in args:
-			manager.on_add_item = self._basic_on_event_handler(manager.item_name + " added")
-			manager.on_delete_item = self._basic_on_event_handler(manager.item_name + " deleted")
-			manager.on_update = self._basic_on_event_handler(manager.item_name + " updated")
-			manager.on_edit = self._basic_on_event_handler(manager.item_name + " edited")
+			self.link_manager(manager)
 
 		self.subscriptions = collections.defaultdict(Queue)
 
@@ -17,6 +14,7 @@ class EventManager(object):
 		manager.on_add_item = self._basic_on_event_handler(manager.item_name + " added")
 		manager.on_delete_item = self._basic_on_event_handler(manager.item_name + " deleted")
 		manager.on_update = self._basic_on_event_handler(manager.item_name + " updated")
+		manager.on_edit = self._basic_on_event_handler(manager.item_name + " edited")
 
 
 	def cleanup_dead_threads(self):

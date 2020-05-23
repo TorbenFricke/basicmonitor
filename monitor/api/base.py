@@ -9,6 +9,7 @@ class DetailApi(Resource):
 	def __init__(self, manager_provider, validation_mask):
 		Resource.__init__(self)
 		self.manager_provider = manager_provider
+		"""A function that returns the relevent manager (i.e. SensorManager, TriggerManager, ...)"""
 		self.validation_mask = validation_mask
 
 
@@ -42,6 +43,7 @@ class DetailApi(Resource):
 
 			# trigger event
 			self.manager_provider().on_edit({"id": item.id})
+			self.manager_provider().save(item.id)
 
 		except Exception as e:
 			return {"message": str(e)}

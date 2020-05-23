@@ -41,6 +41,7 @@ class Trigger(SerializableObject):
 		try:
 			state = self.evaluate(sensor_manager)
 			assert state in [True, False]
+			self.broken = False
 		except:
 			self.broken = True
 			state = None
