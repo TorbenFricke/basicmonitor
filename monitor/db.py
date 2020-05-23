@@ -122,7 +122,7 @@ class Database(object):
 				f"SELECT * from {table_name} LIMIT 1 OFFSET {idx};"
 			)
 		else:
-			idx = abs(idx) + 1
+			idx = abs(idx) - 1
 			return self.execute(
 				f"SELECT * from {table_name} ORDER BY time DESC LIMIT 1 OFFSET {idx};"
 			)
@@ -143,7 +143,7 @@ class Database(object):
 				f"SELECT {columns_str} from {table_name} LIMIT 1 OFFSET {idx};"
 			)
 		else:
-			idx = abs(idx) + 1
+			idx = abs(idx) - 1
 			return self.execute(
 				f"SELECT {columns_str} from {table_name} ORDER BY time DESC LIMIT 1 OFFSET {idx};"
 			)
