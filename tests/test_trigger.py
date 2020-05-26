@@ -52,14 +52,14 @@ class SensorManagerTest(TestCase):
 		}
 
 		# make a trigger
-		t = trigger.Trigger(name="test", variables=vars, expression="t < 4", sensor_manager=sensor_manager)
+		t = trigger.Trigger(name="test", variables=vars, expression="t < 4")
 
 		# serialize and deserialize
 		new = trigger.Trigger.from_json(t.to_json())
 		assert t.to_json() == new.to_json()
 
 		assert t.evaluate(sensor_manager) == False
-		assert t.check(sensor_manager)["state"] == False
+		assert t.update(sensor_manager)["state"] == False
 
 		assert new.evaluate(sensor_manager) == False
 
