@@ -9,6 +9,7 @@ class SerializableObject(object):
 	def __init__(self, **kwargs):
 		# general info
 		self.id = kwargs.pop("id", uid())
+		assert self.id is str
 		self.name = kwargs.pop("name", "New Item")
 		self.retain_for = kwargs.pop("retain_for", 90 * 24 * 60 * 60)
 		self.enabled = kwargs.pop("enabled", True)

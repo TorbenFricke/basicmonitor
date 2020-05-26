@@ -10,8 +10,6 @@ class Sensor(SubclassibleSerializableObject):
 	channels = {}
 	"""provide Channel information in subclasses. Must be overwritten in subclasses"""
 
-	_serialize_blacklist = ["update_handler"]
-
 	def __init__(self, interval=5*60, **kwargs):
 		# was the channel information provided?
 		if not self.channels:
