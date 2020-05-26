@@ -43,10 +43,16 @@ _validation_mask = {
 # list and create triggers
 class TriggerApi(ListCreateApi):
 	def __init__(self):
+
+		def on_trigger_created(trigger):
+			# update sensor synchronously
+			trigger.update(state.get_sensor_manager())
+
 		ListCreateApi.__init__(self,
 			manager_provider=state.get_trigger_manager,
 			validation_mask=_validation_mask,
 		    item_class=Trigger,
+		    on_item_created=on_trigger_created
 		)
 
 

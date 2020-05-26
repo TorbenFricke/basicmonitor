@@ -21,7 +21,6 @@ class Trigger(SerializableObject):
 		# guts
 		self.expression = expression
 		self.variables = variables
-		self.broken = False
 
 		# update handler
 		self.update_handler = do_nothing
@@ -41,9 +40,7 @@ class Trigger(SerializableObject):
 		try:
 			state = self.evaluate(sensor_manager)
 			assert state in [True, False]
-			self.broken = False
 		except:
-			self.broken = True
 			state = None
 
 		# remember the last update
