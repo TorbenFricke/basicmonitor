@@ -20,6 +20,7 @@ def react_app(path):
 from monitor.api.sensor import SensorDetailApi, SensorApi, SensorUpdateApi
 from monitor.api.event import EventsApi
 from monitor.api.trigger import TriggerApi, TriggerDetailApi, TriggerUpdateApi
+from monitor.api.action import ActionApi, ActionDetailApi, ActionNotifyApi
 from monitor.api.query import Query
 from monitor.api.evaluate import Evaluate
 
@@ -31,6 +32,10 @@ api.add_resource(SensorUpdateApi, '/sensors/<string:item_id>/update')
 api.add_resource(TriggerApi, '/triggers', '/triggers/')
 api.add_resource(TriggerDetailApi, '/triggers/<string:item_id>')
 api.add_resource(TriggerUpdateApi, '/triggers/<string:item_id>/update')
+# actions
+api.add_resource(ActionApi, '/actions', '/actions/')
+api.add_resource(ActionDetailApi, '/actions/<string:item_id>')
+api.add_resource(ActionNotifyApi, '/actions/<string:item_id>/notify')
 # events
 api.add_resource(EventsApi, '/events')
 # database queries

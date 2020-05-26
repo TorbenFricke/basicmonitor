@@ -63,7 +63,7 @@ class ListCreateApi(Resource):
 
 
 	def get(self):
-		return [sensor.to_dict() for sensor in self.manager_provider().items]
+		return [item.to_dict() for item in self.manager_provider().items]
 
 
 	def post(self):
