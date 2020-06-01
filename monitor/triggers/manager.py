@@ -17,7 +17,7 @@ class EventWorker(threading.Thread):
 
 
 class TriggerManager(ItemManager):
-	def __init__(self, db, sensor_manager, event_manager):
+	def __init__(self, db, sensor_manager, action_manager, event_manager):
 		ItemManager.__init__(self,
 			db=db,
 			item_factory_function=Trigger.from_json,
@@ -27,6 +27,7 @@ class TriggerManager(ItemManager):
 		)
 		# other managers
 		self.sensor_manager = sensor_manager
+		self.action_manager = action_manager
 
 		# set up the worker
 		self.event_worker = EventWorker(self.handle_event, event_manager)
@@ -42,6 +43,6 @@ class TriggerManager(ItemManager):
 			if sensor_id in trigger.linked_sensors:
 				#print(f"updating {trigger.name}, because sensor {self.sensor_manager[sensor_id].name} was updated")
 				try:
-					trigger.update(self.sensor_manager)
+					trigger.update(self.sensor_manager, self.action_manager)
 				except Exception as e:
 					print(e)

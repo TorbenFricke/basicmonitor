@@ -31,12 +31,13 @@ def variables_validator(variables):
 
 
 
-
 _validation_mask = {
 	"name": validators.string,
 	"retain_for": validators.number_greater_than(60*60), # at least one hour
 	"expression": validators.string,
-	"variables": variables_validator
+	"variables": variables_validator,
+	"action_ids": validators.list_validator(validators.string),
+	"message": validators.string,
 }
 
 
@@ -72,4 +73,4 @@ class TriggerUpdateApi(Resource):
 		if trigger is None:
 			abort(404)
 
-		return trigger.update(state.get_sensor_manager())
+		return trigger.update(state.get_sensor_manager(), state.get_action_manager())

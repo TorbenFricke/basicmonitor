@@ -1,9 +1,11 @@
 from flask import Flask, render_template, send_from_directory
 from flask_restful import Api
+#from flask_compress import Compress
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+#Compress(app)
 api = Api(app)
 
 

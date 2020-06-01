@@ -17,7 +17,7 @@ def apply_validation_mask(data, mask):
 
 
 def positive_float(number):
-		return abs(float(number))
+	return abs(float(number))
 
 
 def url_safe(url):
@@ -59,3 +59,10 @@ def number_greater_than(threshold):
 
 def integer(number):
 	return int(number)
+
+
+def list_validator(validator):
+	def wrapped(some_list):
+		assert type(some_list) is list, "Not a list"
+		return [validator(item) for item in some_list]
+	return wrapped

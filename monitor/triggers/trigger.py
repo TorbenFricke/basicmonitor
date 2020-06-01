@@ -8,10 +8,15 @@ def do_nothing(*args): pass
 class Trigger(SerializableObject):
 	channels = {"state": bool}
 
-	def __init__(self, variables=None, expression="", **kwargs):
+	def __init__(self, variables=None, expression="", message="", **kwargs):
 		# guts
 		self.expression = expression
 		self.variables = variables
+		self.message = message
+		self.action_ids = list(set(kwargs.pop("action_ids", [])))
+		for alert_id in self.action_ids:
+			if not type(alert_id) is str:
+				raise TypeError("alert id {} is not a string".format(alert_id))
 
 		# update handler
 		self.update_handler = do_nothing
@@ -28,7 +33,7 @@ class Trigger(SerializableObject):
 		return parser.evaluate(self.expression, self.variables, sensor_manager)
 
 
-	def update(self, sensor_manager):
+	def update(self, sensor_manager, action_manager):
 		t = time.time()
 
 		try:
@@ -48,7 +53,19 @@ class Trigger(SerializableObject):
 		# event
 		self.update_handler(self.id, reading)
 
+		# actions
+		self._trigger_actions(action_manager)
+
 		return reading
+
+
+	def _trigger_actions(self, action_manager):
+		message = f"Trigger {self.name}: {self.message}"
+		for action_id in self.action_ids:
+			action = action_manager[action_id]
+			if action is None:
+				return
+			action.notify(message)
 
 
 	@property
