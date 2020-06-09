@@ -1,12 +1,12 @@
 from monitor.helpers import uid
-from monitor.data_models import SubclassibleSerializableObject
+from monitor.data_models import SubclassibleItem
 import json, time
 
 
 def do_nothing(*args): pass
 
 
-class Sensor(SubclassibleSerializableObject):
+class Sensor(SubclassibleItem):
 	channels = {}
 	"""provide Channel information in subclasses. Must be overwritten in subclasses"""
 
@@ -18,7 +18,7 @@ class Sensor(SubclassibleSerializableObject):
 		# general information
 		self.interval = interval
 
-		SubclassibleSerializableObject.__init__(self, **kwargs)
+		SubclassibleItem.__init__(self, **kwargs)
 
 		# keep track of the last update
 		self.last_update = kwargs.pop("last_update", -1)
@@ -27,7 +27,7 @@ class Sensor(SubclassibleSerializableObject):
 		self.update_handler = do_nothing
 
 
-		SubclassibleSerializableObject.__init__(self, **kwargs)
+		SubclassibleItem.__init__(self, **kwargs)
 
 		# run validation handled by subclass
 		self.validate()

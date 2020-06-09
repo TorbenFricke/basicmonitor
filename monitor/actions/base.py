@@ -1,11 +1,11 @@
-from monitor.data_models import SubclassibleSerializableObject
+from monitor.data_models import SubclassibleItem
 import time
 
 
 def do_nothing(*args): pass
 
 
-class Action(SubclassibleSerializableObject):
+class Action(SubclassibleItem):
 	channels = {"message": str, "response": str}
 
 	def __init__(self, **kwargs):
@@ -17,25 +17,45 @@ class Action(SubclassibleSerializableObject):
 
 		self.queued_messages = kwargs.pop("queued_messages", [])
 
-		SubclassibleSerializableObject.__init__(self, **kwargs)
+		SubclassibleItem.__init__(self, **kwargs)
 
 
-	def notify(self, message):
+	def assemble_message(self, message=None):
+		_message = ""
+
+		if type(message) is None and len(self.queued_messages) == 0:
+			# No message to build
+			return None
+
+		if not type(message) is None:
+			_message += message
+
+		# assemble message including queue
+		if len(self.queued_messages) > 1:
+			_message += "\nQueued Messages:\n"
+			_message += "\n".join(map(str, self.queued_messages))
+		self.queued_messages = []
+
+		return _message
+
+
+	def notify(self, message=None, force_send=False):
 		now = time.time()
 		time_until_cooldown = self.last_notify + self.cooldown - now
 		# skip if still in cooldown
-		if time_until_cooldown > 0:
+		if time_until_cooldown > 0 and not force_send:
+			if type(message) is None:
+				return "No message to be queued"
+
 			self.queued_messages.append(message)
 			# send an update to the UI - no database entry is created; the message is instead queued
 			self.update_handler(self.id)
 			return f"in cooldown for {time_until_cooldown} more seconds"
 
-		# assemble message including queue
-		message = message
-		if len(self.queued_messages) > 1:
-			message += "\nQueued Messages:\n"
-			message += "\n".join(self.queued_messages)
-		self.queued_messages = []
+		# assemble message
+		message = self.assemble_message(message)
+		if type(message) is None:
+			return "No message to be send"
 
 		# cause the actual notification
 		response = self._notify(message)

@@ -2,7 +2,7 @@ from monitor.helpers import uid
 import json
 
 
-class SerializableObject(object):
+class Item(object):
 	_serialize_blacklist = ["update_handler"]
 	"""Attributes of this object, that will not be serialized"""
 
@@ -21,7 +21,6 @@ class SerializableObject(object):
 				self.__dict__[key] = value
 
 
-
 	def to_dict(self):
 		return {key: value for key, value in self.__dict__.items() if key not in self._serialize_blacklist}
 
@@ -37,11 +36,11 @@ class SerializableObject(object):
 
 
 
-class SubclassibleSerializableObject(SerializableObject):
+class SubclassibleItem(Item):
 
 
 	def to_dict(self):
-		attributes = SerializableObject.to_dict(self)
+		attributes = Item.to_dict(self)
 		# also save the type (ie. subclass)
 		attributes["type"] = str(self.__class__.__name__)
 		return attributes

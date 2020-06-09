@@ -37,7 +37,7 @@ api.add_resource(TriggerUpdateApi, '/triggers/<string:item_id>/update')
 # actions
 api.add_resource(ActionApi, '/actions', '/actions/')
 api.add_resource(ActionDetailApi, '/actions/<string:item_id>')
-api.add_resource(ActionNotifyApi, '/actions/<string:item_id>/notify')
+api.add_resource(ActionNotifyApi, '/actions/<string:item_id>/update')
 # events
 api.add_resource(EventsApi, '/events')
 # database queries

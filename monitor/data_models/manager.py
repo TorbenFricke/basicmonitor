@@ -69,6 +69,7 @@ class ItemManager(object):
 		def update_handler(id, reading=None):
 			if reading is not None:
 				self.db.insert_reading(id, reading, self.readings_table_prefix)
+			self.save(id)
 			self.on_update({
 				"id": id,
 				#"reading": reading # including the reading may cause the json parser to fail for large readings....

@@ -1,11 +1,11 @@
 from monitor.triggers import parser
-from monitor.data_models import SerializableObject
+from monitor.data_models import Item
 import time, json
 
 def do_nothing(*args): pass
 
 
-class Trigger(SerializableObject):
+class Trigger(Item):
 	channels = {"state": bool}
 
 	def __init__(self, variables=None, expression="", message="", **kwargs):
@@ -25,7 +25,7 @@ class Trigger(SerializableObject):
 		self.last_update = kwargs.pop("last_update", -1)
 
 		# initialize superclass, which sets all the basic things
-		SerializableObject.__init__(self, **kwargs)
+		Item.__init__(self, **kwargs)
 
 
 
@@ -74,5 +74,5 @@ class Trigger(SerializableObject):
 
 
 	def to_dict(self):
-		out = SerializableObject.to_dict(self)
+		out = Item.to_dict(self)
 		return out
