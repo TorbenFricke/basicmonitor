@@ -2,10 +2,10 @@ from unittest import TestCase
 from queue import Queue, Empty
 from threading import Thread
 import time
-from monitor.db import Database
-from monitor.sensors import SensorManager
-from monitor.event import EventManager
-from monitor.sensors import Uptime
+from basicmonitor.db import Database
+from basicmonitor.sensors import SensorManager
+from basicmonitor.event import EventManager
+from basicmonitor.sensors import Uptime
 
 
 class YieldTestThread(Thread):

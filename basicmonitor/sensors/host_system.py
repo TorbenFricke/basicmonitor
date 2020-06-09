@@ -1,4 +1,4 @@
-from monitor.sensors.base import Sensor
+from basicmonitor.sensors.base import Sensor
 import psutil, time
 
 

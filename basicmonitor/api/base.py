@@ -3,7 +3,7 @@ from flask_restful import Resource
 from werkzeug.exceptions import abort
 import json
 
-from monitor import validators
+from basicmonitor import validators
 
 class DetailApi(Resource):
 	def __init__(self, manager_provider, validation_mask):

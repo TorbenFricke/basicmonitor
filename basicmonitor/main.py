@@ -19,12 +19,12 @@ def react_app(path):
 	return send_from_directory('build', path)
 
 
-from monitor.api.sensor import SensorDetailApi, SensorApi, SensorUpdateApi
-from monitor.api.event import EventsApi
-from monitor.api.trigger import TriggerApi, TriggerDetailApi, TriggerUpdateApi
-from monitor.api.action import ActionApi, ActionDetailApi, ActionNotifyApi
-from monitor.api.query import Query
-from monitor.api.evaluate import Evaluate
+from basicmonitor.api.sensor import SensorDetailApi, SensorApi, SensorUpdateApi
+from basicmonitor.api.event import EventsApi
+from basicmonitor.api.trigger import TriggerApi, TriggerDetailApi, TriggerUpdateApi
+from basicmonitor.api.action import ActionApi, ActionDetailApi, ActionNotifyApi
+from basicmonitor.api.query import Query
+from basicmonitor.api.evaluate import Evaluate
 
 # list sensors and add new ones
 api.add_resource(SensorApi, '/sensors', '/sensors/')

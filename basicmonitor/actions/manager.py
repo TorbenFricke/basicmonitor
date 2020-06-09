@@ -1,5 +1,5 @@
-from monitor.actions.base import Action
-from monitor.data_models import ItemManager
+from basicmonitor.actions.base import Action
+from basicmonitor.data_models import ItemManager
 
 
 class ActionManager(ItemManager):

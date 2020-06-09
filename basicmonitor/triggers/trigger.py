@@ -1,5 +1,5 @@
-from monitor.triggers import parser
-from monitor.data_models import Item
+from basicmonitor.triggers import parser
+from basicmonitor.data_models import Item
 import time, json
 
 def do_nothing(*args): pass

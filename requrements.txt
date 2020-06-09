@@ -1,5 +1,0 @@
-psutil
-flask
-flask-restful
-Flask-Compress
-simpleeval

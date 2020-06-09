@@ -1,6 +1,6 @@
 from flask_restful import Resource, request
 
-from monitor import state
+from basicmonitor import state
 
 
 class Query(Resource):

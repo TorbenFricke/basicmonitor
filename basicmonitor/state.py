@@ -1,8 +1,8 @@
-from monitor.event import EventManager
-from monitor.sensors import SensorManager
-from monitor.triggers import TriggerManager
-from monitor.actions import ActionManager
-from monitor.db import Database
+from basicmonitor.event import EventManager
+from basicmonitor.sensors import SensorManager
+from basicmonitor.triggers import TriggerManager
+from basicmonitor.actions import ActionManager
+from basicmonitor.db import Database
 import os, threading, collections
 
 _state = collections.defaultdict(dict)

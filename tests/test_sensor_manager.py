@@ -1,7 +1,7 @@
 from unittest import TestCase
-from monitor.sensors.manager import SensorManager
-from monitor.sensors import HTML, Uptime
-from monitor.db import Database
+from basicmonitor.sensors.manager import SensorManager
+from basicmonitor.sensors import HTML, Uptime
+from basicmonitor.db import Database
 
 
 def update(db, s, prefix):

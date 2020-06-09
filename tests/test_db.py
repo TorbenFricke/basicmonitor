@@ -1,8 +1,8 @@
 from unittest import TestCase
 import random, threading, queue, time, json
 from uuid import uuid4
-from monitor.db import Database
-from monitor.sensors import HTML, CPUPercentage, Sensor
+from basicmonitor.db import Database
+from basicmonitor.sensors import HTML, CPUPercentage, Sensor
 
 # make test Database
 db = Database(":memory:", echo=False)

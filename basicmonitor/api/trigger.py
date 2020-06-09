@@ -1,9 +1,9 @@
 from flask_restful import Resource, request, abort
 
-from monitor import validators, state
-from monitor import sensors
-from monitor.triggers import Trigger
-from monitor.api.base import DetailApi, ListCreateApi
+from basicmonitor import validators, state
+from basicmonitor import sensors
+from basicmonitor.triggers import Trigger
+from basicmonitor.api.base import DetailApi, ListCreateApi
 
 
 # make the custom variables validator

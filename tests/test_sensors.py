@@ -1,8 +1,8 @@
 from unittest import TestCase
-from monitor.sensors.host_system import *
-from monitor.sensors.web import *
-from monitor.sensors.base import Sensor
-from monitor.sensors import sensors_available
+from basicmonitor.sensors.host_system import *
+from basicmonitor.sensors.web import *
+from basicmonitor.sensors.base import Sensor
+from basicmonitor.sensors import sensors_available
 
 host_system_sensors = [RAMPercentage, CPUPercentage, Uptime]
 

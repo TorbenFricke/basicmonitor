@@ -2,10 +2,10 @@ from flask import request
 from flask_restful import Resource
 from werkzeug.exceptions import abort
 
-import monitor.sensors
-from monitor import validators, state
-from monitor.sensors import sensors_available
-from monitor.api.base import DetailApi, ListCreateApi
+import basicmonitor.sensors
+from basicmonitor import validators, state
+from basicmonitor.sensors import sensors_available
+from basicmonitor.api.base import DetailApi, ListCreateApi
 
 _validation_mask = {
 	"interval": validators.number_greater_than(29),
@@ -33,11 +33,11 @@ class SensorApi(ListCreateApi):
 			state.get_sensor_manager().updater.cmd(sensor.update)
 
 		ListCreateApi.__init__(self,
-			manager_provider=state.get_sensor_manager,
-			validation_mask=_validation_mask,
-		    item_class=monitor.sensors.Sensor,
-			on_item_created=on_sensor_created,
-		)
+		                       manager_provider=state.get_sensor_manager,
+		                       validation_mask=_validation_mask,
+		                       item_class=basicmonitor.sensors.Sensor,
+		                       on_item_created=on_sensor_created,
+		                       )
 
 
 class SensorUpdateApi(Resource):

@@ -247,7 +247,7 @@ def push(message, api_token, user_key, device):
 
 
 
-from monitor.actions import Action
+from basicmonitor.actions import Action
 import time
 
 class PushoverAction(Action):

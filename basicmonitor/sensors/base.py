@@ -1,5 +1,5 @@
-from monitor.helpers import uid
-from monitor.data_models import SubclassibleItem
+from basicmonitor.helpers import uid
+from basicmonitor.data_models import SubclassibleItem
 import json, time
 
 

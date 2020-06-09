@@ -1,4 +1,4 @@
-from monitor.data_models import SubclassibleItem
+from basicmonitor.data_models import SubclassibleItem
 import time
 
 

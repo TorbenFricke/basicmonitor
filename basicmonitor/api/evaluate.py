@@ -1,7 +1,7 @@
 from flask_restful import Resource, request
 
-from monitor import state
-from monitor.triggers import parser
+from basicmonitor import state
+from basicmonitor.triggers import parser
 
 class Evaluate(Resource):
 	def post(self):

@@ -1,9 +1,9 @@
 from unittest import TestCase
-from monitor.sensors.manager import SensorManager
-from monitor.event import EventManager
-from monitor.sensors import HTML, Uptime
-from monitor.db import Database
-from monitor.triggers import parser, trigger
+from basicmonitor.sensors.manager import SensorManager
+from basicmonitor.event import EventManager
+from basicmonitor.sensors import HTML, Uptime
+from basicmonitor.db import Database
+from basicmonitor.triggers import parser, trigger
 
 
 def make_sensor_with_data(sensor_manager):

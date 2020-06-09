@@ -3,7 +3,7 @@ import json
 from flask import Response
 from flask_restful import Resource
 
-from monitor import state
+from basicmonitor import state
 
 
 class EventsApi(Resource):

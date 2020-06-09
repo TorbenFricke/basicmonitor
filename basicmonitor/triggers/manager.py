@@ -1,5 +1,5 @@
-from monitor.triggers.trigger import Trigger
-from monitor.data_models import ItemManager
+from basicmonitor.triggers.trigger import Trigger
+from basicmonitor.data_models import ItemManager
 import threading
 
 

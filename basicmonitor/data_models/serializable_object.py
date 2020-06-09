@@ -1,4 +1,4 @@
-from monitor.helpers import uid
+from basicmonitor.helpers import uid
 import json
 
 

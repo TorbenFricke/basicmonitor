@@ -292,7 +292,7 @@ if __name__ == "__main__":
 	db.object_table("sensors")
 	db.object_table("cats")
 
-	from monitor.sensors import Uptime, HTML
+	from basicmonitor.sensors import Uptime, HTML
 
 	db.save_object("sensors", Uptime())
 	print(db.fetch_all("sensors"))
