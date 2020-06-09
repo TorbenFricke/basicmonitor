@@ -3,7 +3,8 @@ from basicmonitor.sensors import SensorManager
 from basicmonitor.triggers import TriggerManager
 from basicmonitor.actions import ActionManager
 from basicmonitor.db import Database
-import os, threading, collections
+import os, threading, collections, pathlib
+
 
 _state = collections.defaultdict(dict)
 _lock = threading.Lock()
@@ -12,7 +13,9 @@ def get_state():
 	with _lock:
 		if not "event_manager" in _state:
 			# create Database instance
-			db = Database('{}/everything.db'.format(os.path.dirname(__file__)))
+			db_dir = os.path.expanduser("~/basicmonitor")
+			pathlib.Path(db_dir).mkdir(parents=True, exist_ok=True)
+			db = Database('{}/basicmonitor.db'.format(db_dir))
 
 			# create sensor manager
 			sensor_manager = SensorManager(db)

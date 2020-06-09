@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 requirements = [
 	"psutil",
@@ -9,10 +9,15 @@ requirements = [
 ]
 
 setup(
-	name='Distutils',
-	version='0.1',
-	description='A Super Simple Monitoring Webapp',
+	name='basicmonitor',
+	version='0.1.3dev8',
+	description='A Super Simple Monitoring Webapp Thingi',
 	author='Torben Fricke',
 	url='https://www.python.org/sigs/distutils-sig/',
-	packages=['basicmonitor'],
+	packages=find_packages(),
+	package_data={'basicmonitor': [
+		'build/*',
+		'static/*',
+		'templates/*',
+	]},
 )

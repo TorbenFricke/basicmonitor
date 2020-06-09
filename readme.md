@@ -9,6 +9,10 @@ Deploying BasicMonitor is super simple. Install using pip:
 pip install https://github.com/TorbenFricke/basicmonitor/archive/master.zip
 ```
 
+#### Where is my data
+
+Your data is stored in a sqlite database in your home directory (i.e. `/home/tim/basicmonitor/basicmonitor.db`)
+
 
 
 ## General Concept
