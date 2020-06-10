@@ -9,6 +9,11 @@ Deploying BasicMonitor is super simple. Install using pip:
 pip install https://github.com/TorbenFricke/basicmonitor/archive/master.zip
 ```
 
+And run using:
+```bash
+python -m basicmonitor
+```
+
 ## General Concept
 
 #### Sensors
