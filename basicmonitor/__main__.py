@@ -8,17 +8,23 @@ parser.add_argument(
 	'-prefix',
 	type=str,
 	help='Prefix to run the webapp and api from. The prefix will be applied to every route.',
-	default="",
+	default=None,
 )
 parser.add_argument(
 	'-port', '-p',
 	type=str,
 	help='Port on which the flask server will listen',
-	default=5000,
+	default=None,
 )
-args = parser.parse_args()
+parser.add_argument(
+	'-host',
+	type=str,
+	help='Address, the flaks server will listen on',
+	default=None,
+)
+kwargs = {key:value for key, value in parser.parse_args().__dict__.items() if value is not None}
 
 
 from basicmonitor import run
 
-run(prefix=args.prefix, port=args.port)
+run(**kwargs)
