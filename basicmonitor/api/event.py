@@ -10,9 +10,9 @@ class EventsApi(Resource):
 	def get(self):
 		def events():
 			for event in state.get_event_manager().subscribe():
-				yield json.dumps(event, indent=2) + "\n"
+				yield f"data: {event.get('message', 'no message')}\n\n{json.dumps(event, indent=2)}\n"
 
 		return Response(
 			events(),
-			mimetype='application/json'
+			mimetype='text/event-stream'
 		)

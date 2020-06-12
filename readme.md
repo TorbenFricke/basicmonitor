@@ -16,6 +16,12 @@ And run using:
 ```bash
 python -m basicmonitor
 ```
+or if you want it to be visisble form the network (check out the sectio on security!)
+```bash
+python -m basicmonitor -host 0.0.0.0 -port 80
+```
+
+
 
 You can specify some baisc settings using command line arguments. Check them out using: 
 ```bash
