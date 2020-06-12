@@ -4,7 +4,7 @@ requirements = [
 	"psutil",
 	"flask",
 	"flask-restful",
-	"Flask-Compress",
+	"flask-compress",
 	"simpleeval",
 ]
 
