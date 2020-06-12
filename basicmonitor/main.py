@@ -60,9 +60,8 @@ def make_app(prefix=""):
 		CORS(app)
 		print("Cross-Origin Resource Sharing (CORS) was enabled for debug mode")
 
-	# compression messes with events api
-	#from flask_compress import Compress
-	#Compress(app)
+	from flask_compress import Compress
+	Compress(app)
 
 	return app
 
