@@ -1,6 +1,6 @@
 from basicmonitor.triggers import parser
 from basicmonitor.data_models import Item
-import time, json
+import time
 
 def do_nothing(*args): pass
 
@@ -70,7 +70,7 @@ class Trigger(Item):
 
 	@property
 	def linked_sensors(self):
-		return set([variable["id"] for variable in self.variables.values()])
+		return set([variable["id"] for variable in self.variables])
 
 
 	def to_dict(self):

@@ -33,8 +33,10 @@ def get_variable(path, sensor_manager):
 
 
 def evaluate(expression, variables, sensor_manager):
+	variable_dict = {var["variable"]: var for var in variables}
+
 	def name_handler(node):
-		path = variables[node.id]
+		path = variable_dict[node.id]
 		return get_variable(path, sensor_manager)
 
 	val = simpleeval.simple_eval(expression, names=name_handler)

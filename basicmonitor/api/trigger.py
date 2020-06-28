@@ -11,24 +11,16 @@ _all_channels = ["time"]
 for cls in sensors.Sensor.__subclasses__():
 	_all_channels += list(cls.channels.keys())
 _variables_validation_mask = {
+	"variable": validators.string,
 	"id": validators.string,
 	"row": validators.integer,
 	"channel": validators.whitelist(_all_channels),
 }
 
 def variables_validator(variables):
-	out = {}
-	for variable_name, var in variables.items():
-		clean = validators.apply_validation_mask(var, _variables_validation_mask)
-
-		# make sure all information for a variable is present
-		for key in _variables_validation_mask.keys():
-			assert key in clean
-
-		out[variable_name] = clean
-
-	return out
-
+	return [
+		validators.apply_validation_mask(var, _variables_validation_mask) for var in variables
+	]
 
 
 _validation_mask = {
