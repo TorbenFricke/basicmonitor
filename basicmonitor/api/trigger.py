@@ -48,6 +48,13 @@ class TriggerApi(ListCreateApi):
 		    on_item_created=on_trigger_created
 		)
 
+	def get(self):
+		# override trigger list method to include the last reading
+		items = [item.to_dict() for item in self.manager_provider().items]
+		for item in items:
+			item["last_reading"] = self.manager_provider().last_reading(item["id"])
+		return items
+
 
 # trigger detail
 class TriggerDetailApi(DetailApi):

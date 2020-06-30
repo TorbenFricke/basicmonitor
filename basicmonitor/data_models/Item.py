@@ -36,8 +36,6 @@ class Item(object):
 
 
 class SubclassibleItem(Item):
-
-
 	def to_dict(self):
 		attributes = Item.to_dict(self)
 		# also save the type (ie. subclass)

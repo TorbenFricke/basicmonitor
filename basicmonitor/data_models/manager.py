@@ -66,14 +66,14 @@ class ItemManager(object):
 		# make and link corresponding DB table
 		self.db.channel_table(item, self.readings_table_prefix)
 
-		def update_handler(id, reading=None):
+		def update_handler(id, reading=None, force_include_reading=False):
 			if reading is not None:
 				self.db.insert_reading(id, reading, self.readings_table_prefix)
 			self.save(id)
-			self.on_update({
-				"id": id,
-				#"reading": reading # including the reading may cause the json parser to fail for large readings....
-			})
+			if force_include_reading:
+				self.on_update({"id": id, "reading": reading})
+			else:
+				self.on_update({"id": id})
 
 		# handle updates
 		if not "update_handler" in item.__dict__:

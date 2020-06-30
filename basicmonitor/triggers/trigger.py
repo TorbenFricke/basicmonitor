@@ -2,7 +2,7 @@ from basicmonitor.triggers import parser
 from basicmonitor.data_models import Item
 import time
 
-def do_nothing(*args): pass
+def do_nothing(*args, **kwargs): pass
 
 
 class Trigger(Item):
@@ -51,7 +51,7 @@ class Trigger(Item):
 		}
 
 		# event
-		self.update_handler(self.id, reading)
+		self.update_handler(self.id, reading, force_include_reading=True)
 
 		# actions
 		self._trigger_actions(action_manager)
@@ -71,8 +71,3 @@ class Trigger(Item):
 	@property
 	def linked_sensors(self):
 		return set([variable["id"] for variable in self.variables])
-
-
-	def to_dict(self):
-		out = Item.to_dict(self)
-		return out
