@@ -14,5 +14,6 @@ class EventsApi(Resource):
 
 		return Response(
 			events(),
-			mimetype='text/event-stream'
+			mimetype='text/event-stream',
+			content_type='text/event-stream',
 		)
