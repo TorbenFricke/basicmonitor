@@ -22,7 +22,7 @@ build_files = package_files('basicmonitor/build')
 
 setup(
 	name='basicmonitor',
-	version='0.1.9',
+	version='0.2.0',
 	description='A Super Simple Monitoring Webapp Thingi',
 	author='Torben Fricke',
 	url='https://www.python.org/sigs/distutils-sig/',
