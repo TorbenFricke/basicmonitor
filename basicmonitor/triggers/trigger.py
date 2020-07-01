@@ -54,7 +54,8 @@ class Trigger(Item):
 		self.update_handler(self.id, reading, force_include_reading=True)
 
 		# actions
-		self._trigger_actions(action_manager)
+		if state:
+			self._trigger_actions(action_manager)
 
 		return reading
 
