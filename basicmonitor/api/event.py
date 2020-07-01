@@ -14,7 +14,6 @@ class EventsApi(Resource):
 
 		headers = [
 			("X-Accel-Buffering", "no"),
-			("Transfer-Encoding", "chunked"),
 			("Cache-Control", "no-cache"),
 		]
 
