@@ -12,8 +12,13 @@ class EventsApi(Resource):
 			for event in state.get_event_manager().subscribe():
 				yield f"data: {json.dumps(event)}\n\n"
 
+		headers = [
+			("X-Accel-Buffering", "no"),
+			("Transfer-Encoding", "chunked"),
+		]
+
 		return Response(
 			events(),
 			mimetype='text/event-stream',
-			content_type='text/event-stream',
+			headers=headers
 		)
