@@ -43,6 +43,8 @@ class TriggerManager(ItemManager):
 			if sensor_id in trigger.linked_sensors:
 				#print(f"updating {trigger.name}, because sensor {self.sensor_manager[sensor_id].name} was updated")
 				try:
+					# Updating the trigger can take a while if an slow action is caused. Actions could be switched to
+					# asyncio to reconcile this.
 					trigger.update(self.sensor_manager, self.action_manager)
 				except Exception as e:
 					print(e)
