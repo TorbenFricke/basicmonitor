@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 
 requirements = [
 	"psutil",
+	"requests",
 	"flask",
 	"flask-restful",
 	"flask-compress",
@@ -22,7 +23,7 @@ build_files = package_files('basicmonitor/build')
 
 setup(
 	name='basicmonitor',
-	version='0.2.1',
+	version='0.2.2',
 	description='A Super Simple Monitoring Webapp Thingi',
 	author='Torben Fricke',
 	url='https://www.python.org/sigs/distutils-sig/',

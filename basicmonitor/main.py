@@ -41,7 +41,7 @@ def make_app(prefix=""):
 	# actions
 	api.add_resource(ActionApi, '/actions', '/actions/')
 	api.add_resource(ActionDetailApi, '/actions/<string:item_id>')
-	api.add_resource(ActionNotifyApi, '/actions/<string:item_id>/update')
+	api.add_resource(ActionNotifyApi, '/actions/<string:item_id>/update', '/actions/<string:item_id>/send')
 	# events
 	api.add_resource(EventsApi, '/events')
 	# database queries

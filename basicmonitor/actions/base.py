@@ -36,11 +36,11 @@ class Action(SubclassibleItem):
 	def assemble_message(self, message=None):
 		_message = ""
 
-		if type(message) is None and len(self.queued_messages) == 0:
+		if message is None and len(self.queued_messages) == 0:
 			# No message to build
 			return None
 
-		if not type(message) is None:
+		if not message is None:
 			_message += message
 
 		# assemble message including queue
@@ -57,7 +57,7 @@ class Action(SubclassibleItem):
 		time_until_cooldown = self.last_notify + self.cooldown - now
 		# skip if still in cooldown
 		if self.time_to_next_action > 0 and not force_send:
-			if type(message) is None:
+			if message is None:
 				return "No message to be queued"
 
 			self.queued_messages.append(message)
@@ -67,7 +67,7 @@ class Action(SubclassibleItem):
 
 		# assemble message
 		message = self.assemble_message(message)
-		if type(message) is None:
+		if message is None:
 			return "No message to be send"
 
 		# cause the actual notification
