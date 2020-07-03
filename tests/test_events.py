@@ -67,9 +67,9 @@ class SensorManagerTest(TestCase):
 		t.start()
 
 		sensor_manager.add(Uptime())
-		sensor_manager.updater.check_sensors()
+		sensor_manager.updater.check_actions()
 		# sensor should not be updated again, as it was just updated
-		sensor_manager.updater.check_sensors()
+		sensor_manager.updater.check_actions()
 		time.sleep(0.2)
 
 		assert t.no_calls == 2

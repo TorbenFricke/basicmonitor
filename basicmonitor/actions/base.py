@@ -20,6 +20,19 @@ class Action(SubclassibleItem):
 		SubclassibleItem.__init__(self, **kwargs)
 
 
+	@property
+	def time_to_next_action(self):
+		now = time.time()
+
+		# in cooldown?
+		cooldown_remaining = self.last_notify + self.cooldown - now
+		if cooldown_remaining > 0:
+			return cooldown_remaining
+
+		# no cooldown
+		return 0
+
+
 	def assemble_message(self, message=None):
 		_message = ""
 
@@ -43,7 +56,7 @@ class Action(SubclassibleItem):
 		now = time.time()
 		time_until_cooldown = self.last_notify + self.cooldown - now
 		# skip if still in cooldown
-		if time_until_cooldown > 0 and not force_send:
+		if self.time_to_next_action > 0 and not force_send:
 			if type(message) is None:
 				return "No message to be queued"
 

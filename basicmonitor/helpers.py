@@ -14,3 +14,7 @@ import uuid
 
 def uid():
 	return str(uuid.uuid4())
+
+
+def do_nothing(*args, **kwargs):
+	pass
