@@ -252,7 +252,7 @@ import time
 
 class PushoverAction(Action):
 	def __init__(self, **kwargs):
-		# make sure the required API ino is provided
+		# make sure the required API credentials are provided
 		self.api_token = kwargs.pop("api_token")
 		self.user_key = kwargs.pop("user_key")
 		self.device = kwargs.pop("device")
