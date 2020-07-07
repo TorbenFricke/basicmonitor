@@ -29,8 +29,12 @@ class Action(SubclassibleItem):
 		if cooldown_remaining > 0:
 			return cooldown_remaining
 
-		# no cooldown
-		return 0
+		# no cooldown + queued messages = do something
+		if len(self.queued_messages) > 0:
+			return 0
+
+		# no cooldown + nothing to do = return a large value
+		return 10 * 60
 
 
 	def assemble_message(self, message=None):
@@ -72,6 +76,9 @@ class Action(SubclassibleItem):
 
 		# cause the actual notification
 		response = self._notify(message)
+
+		# clear queue
+		self.queued_messages = []
 
 		# call the update handler - used to write to Database
 		self.update_handler(self.id, {

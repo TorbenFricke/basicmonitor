@@ -17,6 +17,9 @@ _validation_mask = {
 	"api_token": validators.string,
 	"user_key": validators.string,
 	"device": validators.string,
+	# Webhook
+	"url": validators.string,
+	"method": validators.string,
 }
 
 
