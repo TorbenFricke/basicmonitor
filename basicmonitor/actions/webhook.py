@@ -19,7 +19,8 @@ class WebhookAction(Action):
 		req = requests.request(
 			method=self.method,
 			url=self.url,
-			data={"message": message}
+			data={"message": message},
+			timeout = 5,
 		)
 		return f"Made a {self.method.upper()} request to {self.url}. Status code {req.status_code}. " \
 		       f"This took {req.elapsed:.1f} ms"

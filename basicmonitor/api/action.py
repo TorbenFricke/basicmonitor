@@ -62,7 +62,6 @@ class ActionNotifyApi(Resource):
 
 		return response
 
-
 	def get(self, item_id):
 		action = state.get_action_manager()[item_id]
 		action.notify()

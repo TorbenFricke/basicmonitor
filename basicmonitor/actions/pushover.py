@@ -8,7 +8,8 @@ def push(message, api_token, user_key, device):
 			"user": user_key,
 			"device": device,
 			"message": message
-		}
+		},
+		timeout=5,
 	)
 
 from basicmonitor.actions import Action
