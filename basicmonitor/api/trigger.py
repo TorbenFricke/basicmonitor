@@ -3,7 +3,7 @@ from flask_restful import Resource, request, abort
 from basicmonitor import validators, state
 from basicmonitor import sensors
 from basicmonitor.triggers import Trigger
-from basicmonitor.api.base import DetailApi, ListCreateApi
+from basicmonitor.api.base import DetailApi, ListCreateApi, ErrorResponse
 
 
 # make the custom variables validator
@@ -70,6 +70,6 @@ class TriggerUpdateApi(Resource):
 	def get(self, item_id):
 		trigger = state.get_trigger_manager()[item_id]
 		if trigger is None:
-			abort(404)
+			return ErrorResponse("Item not found")
 
 		return trigger.update(state.get_sensor_manager(), state.get_action_manager())

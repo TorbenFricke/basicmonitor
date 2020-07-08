@@ -5,11 +5,15 @@ import json
 
 from basicmonitor import validators
 
+def ErrorResponse(message, code=200):
+	return {"type": "error", "message": str(message)}, code
+
+
 class DetailApi(Resource):
 	def __init__(self, manager_provider, validation_mask):
 		Resource.__init__(self)
 		self.manager_provider = manager_provider
-		"""A function that returns the relevent manager (i.e. SensorManager, TriggerManager, ...)"""
+		"""A function that returns the relevant manager (i.e. SensorManager, TriggerManager, ...)"""
 		self.validation_mask = validation_mask
 
 
@@ -17,7 +21,7 @@ class DetailApi(Resource):
 		item_manager = self.manager_provider()
 		item = item_manager[item_id]
 		if item is None:
-			abort(404)
+			return ErrorResponse("Item not found")
 
 		data = item.to_dict()
 		data["last_reading"] = item_manager.last_reading(item_id)
@@ -32,7 +36,7 @@ class DetailApi(Resource):
 	def put(self, item_id):
 		item = self.manager_provider()[item_id]
 		if item is None:
-			abort(404)
+			return ErrorResponse("Item not found")
 
 		data = request.get_json(force=True)
 		try:
@@ -46,7 +50,7 @@ class DetailApi(Resource):
 			self.manager_provider().save(item.id)
 
 		except Exception as e:
-			return {"message": str(e)}
+			return ErrorResponse(e)
 
 		return item.to_dict()
 
@@ -76,7 +80,7 @@ class ListCreateApi(Resource):
 			item = self.item_class.from_json(json.dumps(clean))
 
 		except Exception as e:
-			return {"message": str(e)}
+			return ErrorResponse(e)
 
 		item_manager = self.manager_provider()
 		item_manager.add(item)

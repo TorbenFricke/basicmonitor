@@ -5,21 +5,28 @@ from flask import request
 import basicmonitor.actions
 from basicmonitor import validators, state
 from basicmonitor.actions import actions_available
-from basicmonitor.api.base import DetailApi, ListCreateApi
+from basicmonitor.api.base import DetailApi, ListCreateApi, ErrorResponse
 
 _validation_mask = {
 	"retain_for": validators.number_greater_than(60*60), # at least one hour
-	"name": validators.string,
+	"name": validators.non_empty_string,
 	"enabled": validators.boolean,
-	"type": validators.whitelist(actions_available),
 	"cooldown": validators.positive_float,
-	# Pushover
-	"api_token": validators.string,
-	"user_key": validators.string,
-	"device": validators.string,
-	# Webhook
-	"url": validators.string,
-	"method": validators.string,
+	"type": validators.conditional_validator(
+		validators.whitelist(actions_available),
+		{
+			'PushoverAction': {
+				"api_token": validators.non_empty_string,
+				"user_key": validators.non_empty_string,
+				"device": validators.non_empty_string,
+			},
+			'WebhookAction': {
+				"url": validators.non_empty_string,
+				"method": validators.whitelist(["get", "put", "post", "delete"],
+				                               preprocessor=lambda x: str(x).lower()),
+			},
+		}
+	),
 }
 
 
@@ -44,7 +51,7 @@ class ActionNotifyApi(Resource):
 	def post(self, item_id):
 		action = state.get_action_manager()[item_id]
 		if action is None:
-			abort(404)
+			return ErrorResponse("Item not found")
 
 		try:
 			# do some validation
@@ -58,6 +65,6 @@ class ActionNotifyApi(Resource):
 			response = action.notify(message, force_send)
 
 		except Exception as e:
-			return str(e)
+			return ErrorResponse(e)
 
 		return response

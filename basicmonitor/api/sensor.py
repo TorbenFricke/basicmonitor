@@ -5,7 +5,7 @@ from werkzeug.exceptions import abort
 import basicmonitor.sensors
 from basicmonitor import validators, state
 from basicmonitor.sensors import sensors_available
-from basicmonitor.api.base import DetailApi, ListCreateApi
+from basicmonitor.api.base import DetailApi, ListCreateApi, ErrorResponse
 
 _validation_mask = {
 	"interval": validators.number_greater_than(29),
@@ -44,7 +44,7 @@ class SensorUpdateApi(Resource):
 	def get(self, item_id):
 		sensor = state.get_sensor_manager()[item_id]
 		if sensor is None:
-			abort(404)
+			return ErrorResponse("Item not found")
 
 		return sensor.update()
 
