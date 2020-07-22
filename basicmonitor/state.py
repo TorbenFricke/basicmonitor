@@ -6,7 +6,7 @@ from basicmonitor.db import Database
 import os, threading, collections, pathlib
 
 
-_state = collections.defaultdict(dict)
+_state = {}
 _lock = threading.Lock()
 
 def get_state():
