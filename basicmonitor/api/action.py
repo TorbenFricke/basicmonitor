@@ -25,7 +25,6 @@ _validation_mask = {
 				"method": validators.whitelist(["get", "put", "post", "delete"],
 				                               preprocessor=lambda x: str(x).lower()),
 			},
-			'RebootAction': {},
 		}
 	),
 }
